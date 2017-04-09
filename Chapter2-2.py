@@ -9,30 +9,48 @@ class Todo(tk.Tk):
         else:
             self.tasks = tasks
 
+        self.items_canvas = tk.Canvas(self)
+
+        self.items_frame = tk.Frame(self.items_canvas, bg='white')
+        self.text_frame = tk.Frame(self.items_canvas, bg='blue')
+
+        self.scrollbar = tk.Scrollbar(self.items_canvas, orient='vertical', command=self.items_canvas.yview)
+
+        self.items_canvas.configure(yscrollcommand=self.scrollbar.set)
+
         self.title("To-Do App v1")
         self.geometry("300x400")
 
-        self.todo1 = tk.Label(self, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
+        self.task_create = tk.Text(self.text_frame, height=3, bg="white", fg="black")
 
-        self.tasks.append(self.todo1)
-
-        for task in self.tasks:
-            task.pack(side=tk.TOP, fill=tk.X)
-
-        self.task_create = tk.Text(self, height=3, bg="white", fg="black")
-
+        self.items_canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+        self.text_frame.pack(side=tk.BOTTOM, fill=tk.X)
         self.task_create.pack(side=tk.BOTTOM, fill=tk.X)
         self.task_create.focus_set()
+        self.canvas_frame = self.items_canvas.create_window((1, 1), window=self.items_frame, anchor="ne")
+        self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+
+     #   self.todo1 = tk.Label(self.items_frame, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
+
+      #  self.tasks.append(self.todo1)
+
+      #  for task in self.tasks:
+      #      task.pack(side=tk.TOP, fill=tk.X)
 
         self.bind("<Return>", self.add_item)
-
+        self.bind('<Configure>', self.on_frame_configure)
+        self.bind_all('<MouseWheel>', self.mouse_scroll)
+        self.bind_all('<Button-4>', self.mouse_scroll)
+        self.bind_all('<Button-5>', self.mouse_scroll)
+        #self.items_canvas.bind('<Configure>', self.chat_width)
         self.colour_schemes = [{"bg": "lightgrey", "fg": "black"}, {"bg": "grey", "fg": "white"}]
 
     def add_item(self, evt):
         item_text = self.task_create.get(1.0,tk.END).strip()
 
         if len(item_text) > 0:
-            new_item = tk.Label(self, text=item_text, pady=10)
+            new_item = tk.Label(self.items_frame, text=item_text, pady=10)
 
             _, item_style_choice = divmod(len(self.tasks), 2)
 
@@ -46,6 +64,24 @@ class Todo(tk.Tk):
             self.tasks.append(new_item)
 
         self.task_create.delete(1.0, tk.END)
+
+    def on_frame_configure(self, event):
+        self.items_canvas.configure(scrollregion=self.items_canvas.bbox("all"))
+
+    def chat_width(self, event):
+        canvas_width = event.width
+        self.items_canvas.itemconfig(self.canvas_frame, width = canvas_width)
+
+    def mouse_scroll(self, event):
+        if event.delta:
+            self.items_canvas.yview_scroll(-1*(event.delta/120), 'units')
+        else:
+            if event.num == 5:
+                move = 1
+            else:
+                move = -1
+
+            self.items_canvas.yview_scroll(move, 'units')
 
 if __name__ == "__main__":
     todo = Todo()
