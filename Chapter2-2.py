@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as msg
 
 class Todo(tk.Tk):
     def __init__(self, tasks=None):
@@ -33,6 +34,7 @@ class Todo(tk.Tk):
         self.task_create.focus_set()
 
         self.todo1 = tk.Label(self.items_frame, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
+        self.todo1.bind("<Button-1>", self.remove_item)
 
         self.tasks.append(self.todo1)
 
@@ -60,12 +62,19 @@ class Todo(tk.Tk):
 
             new_item.configure(bg=my_scheme_choice["bg"])
             new_item.configure(fg=my_scheme_choice["fg"])
+            new_item.bind("<Button-1>", self.remove_item)
 
             new_item.pack(side=tk.TOP, fill=tk.X)
 
             self.tasks.append(new_item)
 
         self.task_create.delete(1.0, tk.END)
+
+    def remove_item(self, evt):
+        item = evt.widget
+        if msg.askyesno('Really Delete?', 'Delete ' + item.cget('text') + '?'):
+            self.tasks.remove(evt.widget)
+            evt.widget.destroy()
 
     def on_frame_configure(self, event):
         self.items_canvas.configure(scrollregion=self.items_canvas.bbox("all"))
