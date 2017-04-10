@@ -11,8 +11,8 @@ class Todo(tk.Tk):
 
         self.items_canvas = tk.Canvas(self)
 
-        self.items_frame = tk.Frame(self.items_canvas, bg='white')
-        self.text_frame = tk.Frame(self.items_canvas, bg='blue')
+        self.items_frame = tk.Frame(self.items_canvas)
+        self.text_frame = tk.Frame(self)
 
         self.scrollbar = tk.Scrollbar(self.items_canvas, orient='vertical', command=self.items_canvas.yview)
 
@@ -24,26 +24,28 @@ class Todo(tk.Tk):
         self.task_create = tk.Text(self.text_frame, height=3, bg="white", fg="black")
 
         self.items_canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-        self.text_frame.pack(side=tk.BOTTOM, fill=tk.X)
-        self.task_create.pack(side=tk.BOTTOM, fill=tk.X)
-        self.task_create.focus_set()
-        self.canvas_frame = self.items_canvas.create_window((1, 1), window=self.items_frame, anchor="ne")
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
+        self.canvas_frame = self.items_canvas.create_window((0, 0), window=self.items_frame, anchor="n")
 
-     #   self.todo1 = tk.Label(self.items_frame, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
+        self.task_create.pack(side=tk.BOTTOM, fill=tk.X)
+        self.text_frame.pack(side=tk.BOTTOM, fill=tk.X)
+        self.task_create.focus_set()
 
-      #  self.tasks.append(self.todo1)
+        self.todo1 = tk.Label(self.items_frame, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
 
-      #  for task in self.tasks:
-      #      task.pack(side=tk.TOP, fill=tk.X)
+        self.tasks.append(self.todo1)
+
+        for task in self.tasks:
+            task.pack(side=tk.TOP, fill=tk.X)
 
         self.bind("<Return>", self.add_item)
         self.bind('<Configure>', self.on_frame_configure)
         self.bind_all('<MouseWheel>', self.mouse_scroll)
         self.bind_all('<Button-4>', self.mouse_scroll)
         self.bind_all('<Button-5>', self.mouse_scroll)
-        #self.items_canvas.bind('<Configure>', self.chat_width)
+        self.items_canvas.bind('<Configure>', self.task_width)
+
         self.colour_schemes = [{"bg": "lightgrey", "fg": "black"}, {"bg": "grey", "fg": "white"}]
 
     def add_item(self, evt):
@@ -68,7 +70,7 @@ class Todo(tk.Tk):
     def on_frame_configure(self, event):
         self.items_canvas.configure(scrollregion=self.items_canvas.bbox("all"))
 
-    def chat_width(self, event):
+    def task_width(self, event):
         canvas_width = event.width
         self.items_canvas.itemconfig(self.canvas_frame, width = canvas_width)
 
