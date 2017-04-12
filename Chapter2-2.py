@@ -19,7 +19,7 @@ class Todo(tk.Tk):
 
         self.tasks_canvas.configure(yscrollcommand=self.scrollbar.set)
 
-        self.title("To-Do App v1")
+        self.title("To-Do App v2")
         self.geometry("300x400")
 
         self.task_create = tk.Text(self.text_frame, height=3, bg="white", fg="black")

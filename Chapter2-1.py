@@ -24,26 +24,26 @@ class Todo(tk.Tk):
         self.task_create.pack(side=tk.BOTTOM, fill=tk.X)
         self.task_create.focus_set()
 
-        self.bind("<Return>", self.add_item)
+        self.bind("<Return>", self.add_task)
 
         self.colour_schemes = [{"bg": "lightgrey", "fg": "black"}, {"bg": "grey", "fg": "white"}]
 
-    def add_item(self, evt):
-        item_text = self.task_create.get(1.0,tk.END).strip()
+    def add_task(self, evt):
+        task_text = self.task_create.get(1.0,tk.END).strip()
 
-        if len(item_text) > 0:
-            new_item = tk.Label(self, text=item_text, pady=10)
+        if len(task_text) > 0:
+            new_task = tk.Label(self, text=task_text, pady=10)
 
-            _, item_style_choice = divmod(len(self.tasks), 2)
+            _, task_style_choice = divmod(len(self.tasks), 2)
 
-            my_scheme_choice = self.colour_schemes[item_style_choice]
+            my_scheme_choice = self.colour_schemes[task_style_choice]
 
-            new_item.configure(bg=my_scheme_choice["bg"])
-            new_item.configure(fg=my_scheme_choice["fg"])
+            new_task.configure(bg=my_scheme_choice["bg"])
+            new_task.configure(fg=my_scheme_choice["fg"])
 
-            new_item.pack(side=tk.TOP, fill=tk.X)
+            new_task.pack(side=tk.TOP, fill=tk.X)
 
-            self.tasks.append(new_item)
+            self.tasks.append(new_task)
 
         self.task_create.delete(1.0, tk.END)
 
