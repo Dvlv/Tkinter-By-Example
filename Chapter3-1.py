@@ -1,14 +1,14 @@
 import tkinter as tk
-from tkinter import messagebox as msg
-from tkinter.ttk import Notebook
 import requests
+from tkinter.ttk import Notebook
+from tkinter import messagebox as msg
 
 class TranslateBook(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.title('Translation Book v1')
-        self.geometry('500x300')
+        self.title("Translation Book v1")
+        self.geometry("500x300")
 
         self.notebook = Notebook(self)
 
@@ -25,7 +25,7 @@ class TranslateBook(tk.Tk):
         self.italian_copy_button.pack(side=tk.BOTTOM, fill=tk.X)
 
         self.italian_translation = tk.StringVar(italian_tab)
-        self.italian_translation.set('')
+        self.italian_translation.set("")
 
         self.italian_label = tk.Label(italian_tab, textvar=self.italian_translation, bg="lightgrey", fg="black")
         self.italian_label.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
@@ -37,25 +37,26 @@ class TranslateBook(tk.Tk):
 
     def translate(self, target_language=None, text=None):
         if not target_language:
-            target_language = 'it'
+            target_language = "it"
 
         if not text:
             text = self.english_entry.get(1.0, tk.END)
 
-        url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}".format('en', target_language, text)
+        url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}".format("en", target_language, text)
 
         r = requests.get(url)
         r.raise_for_status()
         translation = r.json()[0][0][0]
         self.italian_translation.set(translation)
-        msg.showinfo('Translation Successful', 'Text successfully translated')
+        msg.showinfo("Translation Successful", "Text successfully translated")
 
     def copy_to_clipboard(self, text=None):
         if not text:
             text = self.italian_translation.get()
-            self.clipboard_clear()
-            self.clipboard_append(text)
-            msg.showinfo('Copied Successfully', 'Text copied to clipboard')
+
+        self.clipboard_clear()
+        self.clipboard_append(text)
+        msg.showinfo("Copied Successfully", "Text copied to clipboard")
 
 
 if __name__ == "__main__":
