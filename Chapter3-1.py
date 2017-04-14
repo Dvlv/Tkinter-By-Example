@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox as msg
 from tkinter.ttk import Notebook
 import requests
 
@@ -47,12 +48,14 @@ class TranslateBook(tk.Tk):
         r.raise_for_status()
         translation = r.json()[0][0][0]
         self.italian_translation.set(translation)
+        msg.showinfo('Translation Successful', 'Text successfully translated')
 
     def copy_to_clipboard(self, text=None):
         if not text:
             text = self.italian_translation.get()
             self.clipboard_clear()
             self.clipboard_append(text)
+            msg.showinfo('Copied Successfully', 'Text copied to clipboard')
 
 
 if __name__ == "__main__":
