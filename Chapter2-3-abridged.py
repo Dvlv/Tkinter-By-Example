@@ -41,11 +41,11 @@ class Todo(tk.Tk):
 
     def remove_task(self, evt):
         task = evt.widget
-        if msg.askyesno('Really Delete?', 'Delete ' + task.cget('text') + '?'):
+        if msg.askyesno("Really Delete?", "Delete " + task.cget("text") + "?"):
             self.tasks.remove(evt.widget)
 
-            delete_task_query = 'DELETE FROM tasks WHERE task=?'
-            delete_task_data = (task.cget('text'),)
+            delete_task_query = "DELETE FROM tasks WHERE task=?"
+            delete_task_data = (task.cget("text"),)
             self._runQuery(delete_task_query, delete_task_data)
 
             evt.widget.destroy()
@@ -55,19 +55,19 @@ class Todo(tk.Tk):
     ...
 
     def save_task(self, task):
-        insert_task_query = 'INSERT INTO tasks VALUES (?)'
+        insert_task_query = "INSERT INTO tasks VALUES (?)"
         insert_task_data = (task,)
         self._runQuery(insert_task_query, insert_task_data)
 
     def load_tasks(self):
-        load_tasks_query = 'SELECT task FROM tasks'
+        load_tasks_query = "SELECT task FROM tasks"
         my_tasks = self._runQuery(load_tasks_query, receive=True)
 
         return my_tasks
 
     @staticmethod
     def _runQuery(sql, data=None, receive=False):
-        conn = sqlite3.connect('tasks.db')
+        conn = sqlite3.connect("tasks.db")
         cursor = conn.cursor()
         if data:
             cursor.execute(sql, data)
@@ -83,16 +83,16 @@ class Todo(tk.Tk):
 
     @staticmethod
     def _firstTimeDB():
-        create_tables = 'CREATE TABLE tasks (task TEXT)'
+        create_tables = "CREATE TABLE tasks (task TEXT)"
         Todo._runQuery(create_tables)
 
-        default_task_query = 'INSERT INTO tasks VALUES (?)'
-        default_task_data = ('--- Add Items Here ---',)
+        default_task_query = "INSERT INTO tasks VALUES (?)"
+        default_task_data = ("--- Add Items Here ---",)
         Todo._runQuery(default_task_query, default_task_data)
 
 
 if __name__ == "__main__":
-    if not os.path.isfile('tasks.db'):
+    if not os.path.isfile("tasks.db"):
         Todo._firstTimeDB()
     todo = Todo()
     todo.mainloop()
