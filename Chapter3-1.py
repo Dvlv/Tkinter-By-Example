@@ -1,7 +1,8 @@
 import tkinter as tk
-import requests
-from tkinter.ttk import Notebook
 from tkinter import messagebox as msg
+from tkinter.ttk import Notebook
+
+import requests
 
 class TranslateBook(tk.Tk):
     def __init__(self):
@@ -35,20 +36,20 @@ class TranslateBook(tk.Tk):
 
         self.notebook.pack(fill=tk.BOTH, expand=1)
 
-    def translate(self, target_language=None, text=None):
-        if not target_language:
-            target_language = "it"
-
+    def translate(self, target_language="it", text=None):
         if not text:
             text = self.english_entry.get(1.0, tk.END)
 
         url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl={}&tl={}&dt=t&q={}".format("en", target_language, text)
 
-        r = requests.get(url)
-        r.raise_for_status()
-        translation = r.json()[0][0][0]
-        self.italian_translation.set(translation)
-        msg.showinfo("Translation Successful", "Text successfully translated")
+        try:
+            r = requests.get(url)
+            r.raise_for_status()
+            translation = r.json()[0][0][0]
+            self.italian_translation.set(translation)
+            msg.showinfo("Translation Successful", "Text successfully translated")
+        except Exception as e:
+            msg.showerror("Translation Failed", str(e))
 
     def copy_to_clipboard(self, text=None):
         if not text:

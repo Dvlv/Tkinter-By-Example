@@ -17,7 +17,7 @@ class Todo(tk.Tk):
         self.tasks_frame = tk.Frame(self.tasks_canvas)
         self.text_frame = tk.Frame(self)
 
-        self.scrollbar = tk.Scrollbar(self.tasks_canvas, orient='vertical', command=self.tasks_canvas.yview)
+        self.scrollbar = tk.Scrollbar(self.tasks_canvas, orient="vertical", command=self.tasks_canvas.yview)
 
         self.tasks_canvas.configure(yscrollcommand=self.scrollbar.set)
 
@@ -43,11 +43,11 @@ class Todo(tk.Tk):
             self.add_task(None, task_text, True)
 
         self.bind("<Return>", self.add_task)
-        self.bind('<Configure>', self.on_frame_configure)
-        self.bind_all('<MouseWheel>', self.mouse_scroll)
-        self.bind_all('<Button-4>', self.mouse_scroll)
-        self.bind_all('<Button-5>', self.mouse_scroll)
-        self.tasks_canvas.bind('<Configure>', self.task_width)
+        self.bind("<Configure>", self.on_frame_configure)
+        self.bind_all("<MouseWheel>", self.mouse_scroll)
+        self.bind_all("<Button-4>", self.mouse_scroll)
+        self.bind_all("<Button-5>", self.mouse_scroll)
+        self.tasks_canvas.bind("<Configure>", self.task_width)
 
     def add_task(self, evt, task_text=None, from_db=False):
         if not task_text:
@@ -70,11 +70,11 @@ class Todo(tk.Tk):
 
     def remove_task(self, evt):
         task = evt.widget
-        if msg.askyesno('Really Delete?', 'Delete ' + task.cget('text') + '?'):
+        if msg.askyesno("Really Delete?", "Delete " + task.cget("text") + "?"):
             self.tasks.remove(evt.widget)
 
-            delete_task_query = 'DELETE FROM tasks WHERE task=?'
-            delete_task_data = (task.cget('text'),)
+            delete_task_query = "DELETE FROM tasks WHERE task=?"
+            delete_task_data = (task.cget("text"),)
             self._runQuery(delete_task_query, delete_task_data)
 
             evt.widget.destroy()
@@ -102,29 +102,29 @@ class Todo(tk.Tk):
 
     def mouse_scroll(self, event):
         if event.delta:
-            self.tasks_canvas.yview_scroll(-1*(event.delta/120), 'units')
+            self.tasks_canvas.yview_scroll(-1*(event.delta/120), "units")
         else:
             if event.num == 5:
                 move = 1
             else:
                 move = -1
 
-            self.tasks_canvas.yview_scroll(move, 'units')
+            self.tasks_canvas.yview_scroll(move, "units")
 
     def save_task(self, task):
-        insert_task_query = 'INSERT INTO tasks VALUES (?)'
+        insert_task_query = "INSERT INTO tasks VALUES (?)"
         insert_task_data = (task,)
         self._runQuery(insert_task_query, insert_task_data)
 
     def load_tasks(self):
-        load_tasks_query = 'SELECT task FROM tasks'
+        load_tasks_query = "SELECT task FROM tasks"
         my_tasks = self._runQuery(load_tasks_query, receive=True)
 
         return my_tasks
 
     @staticmethod
     def _runQuery(sql, data=None, receive=False):
-        conn = sqlite3.connect('tasks.db')
+        conn = sqlite3.connect("tasks.db")
         cursor = conn.cursor()
         if data:
             cursor.execute(sql, data)
@@ -140,16 +140,16 @@ class Todo(tk.Tk):
 
     @staticmethod
     def _firstTimeDB():
-        create_tables = 'CREATE TABLE tasks (task TEXT)'
+        create_tables = "CREATE TABLE tasks (task TEXT)"
         Todo._runQuery(create_tables)
 
-        default_task_query = 'INSERT INTO tasks VALUES (?)'
-        default_task_data = ('--- Add Items Here ---',)
+        default_task_query = "INSERT INTO tasks VALUES (?)"
+        default_task_data = ("--- Add Items Here ---",)
         Todo._runQuery(default_task_query, default_task_data)
 
 
 if __name__ == "__main__":
-    if not os.path.isfile('tasks.db'):
+    if not os.path.isfile("tasks.db"):
         Todo._firstTimeDB()
     todo = Todo()
     todo.mainloop()
