@@ -16,7 +16,7 @@ class TranslateBook(tk.Tk):
         english_tab = tk.Frame(self.notebook)
         italian_tab = tk.Frame(self.notebook)
 
-        self.translate_button = tk.Button(english_tab, text="translate", command=self.translate)
+        self.translate_button = tk.Button(english_tab, text="Translate", command=self.translate)
         self.translate_button.pack(side=tk.BOTTOM, fill=tk.X)
 
         self.english_entry = tk.Text(english_tab, bg="white", fg="black")
