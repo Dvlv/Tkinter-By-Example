@@ -55,7 +55,7 @@ class NewLanguageForm(tk.Toplevel):
 
         if lang_name and lang_code:
             new_tab = LanguageTab(self.master, lang_name, lang_code)
-            new_menu_entry = self.master.languages_menu.add_command(label=lang_name, command=self.master.add_new_tab(new_tab))
+            self.master.languages_menu.add_command(label=lang_name, command=lambda: self.master.add_new_tab(new_tab))
             msg.showinfo("Language Option Added", "Language option " + lang_name + " added to menu")
             self.destroy()
         else:
