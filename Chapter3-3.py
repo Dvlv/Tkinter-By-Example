@@ -56,7 +56,7 @@ class NewLanguageForm(tk.Toplevel):
         if lang_name and lang_code:
             new_tab = LanguageTab(self.master, lang_name, lang_code)
             new_menu_entry = self.master.languages_menu.add_command(label=lang_name, command=self.master.add_new_tab(new_tab))
-            msg.showinfo("Language Option Added", "Language Option " + lang_name + " added to menu")
+            msg.showinfo("Language Option Added", "Language option " + lang_name + " added to menu")
             self.destroy()
         else:
             msg.showerror("Missing Information", "Please add both a name and code")
@@ -66,7 +66,7 @@ class TranslateBook(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.title("Translation Book v2")
+        self.title("Translation Book v3")
         self.geometry("500x300")
 
         self.menu = tk.Menu(self, bg="lightgrey", fg="black")
