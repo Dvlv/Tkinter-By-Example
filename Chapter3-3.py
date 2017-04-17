@@ -128,7 +128,7 @@ class TranslateBook(tk.Tk):
             pass
 
     def show_new_language_popup(self):
-        popup = NewLanguageForm(self)
+        NewLanguageForm(self)
 
 
 if __name__ == "__main__":
