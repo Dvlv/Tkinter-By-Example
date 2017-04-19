@@ -7,6 +7,8 @@ class Game(tk.Tk):
 
         self.title("Point and Click")
         self.geometry("800x640")
+        self.minsize(width=800, height=640)
+        self.maxsize(width=800, height=640)
 
         self.screen = tk.Canvas(self, bg="white", width=500, height=800)
         self.right_frame = tk.Frame(self, background="red", width=300, height=800)
@@ -31,13 +33,14 @@ class Game(tk.Tk):
         # question mark image
         #self.question_mark_image = tk.PhotoImage('assets/questionmark.png')
         self.help_box.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
-        #self.inventory_title.pack()
 
-        #self.inventory_slot_1.pack(side=tk.LEFT, padx=(50,25))
-        #self.inventory_slot_2.pack(side=tk.LEFT, padx=25)
-        #self.inventory_slot_3.pack(side=tk.LEFT, padx=25)
+        self.inventory_slot_1.pack(fill=tk.X, pady=(60,30), padx=20)
+        self.inventory_slot_2.pack(fill=tk.X, pady=30, padx=20)
+        self.inventory_slot_3.pack(fill=tk.X, pady=(30,30), padx=20)
 
         self.inventory_space.pack(side=tk.BOTTOM)
+
+        self.inventory_title.pack(side=tk.BOTTOM, fill=tk.X)
 
         self.right_frame.pack(side=tk.RIGHT)
         self.screen.pack(side=tk.LEFT)
