@@ -36,7 +36,7 @@ class Game(tk.Tk):
         self.question_mark_image = tk.PhotoImage(file='assets/questionmark.png')
 
         self.screen = tk.Canvas(self, bg="white", width=500, height=800)
-        self.right_frame = tk.Frame(self, background="red", width=300, height=800)
+        self.right_frame = tk.Frame(self, width=300, height=800)
         self.right_frame.pack_propagate(0)
 
         self.help_var = tk.StringVar(self.right_frame)
@@ -47,7 +47,7 @@ class Game(tk.Tk):
 
         self.inventory_title = tk.Label(self.right_frame, text="Inventory:", background="grey", foreground="white")
 
-        self.inventory_space = tk.Frame(self.right_frame, bg="blue", width=300, height=320)
+        self.inventory_space = tk.Frame(self.right_frame, background="lightgrey", width=300, height=320)
         self.inventory_space.pack_propagate(0)
 
         self.inventory_space.pack(side=tk.BOTTOM)
@@ -108,14 +108,15 @@ class Game(tk.Tk):
             self.display_screen(0)
 
 
-game = Game()
+if __name__ == "__main__":
+    game = Game()
 
-scene1 = GameScreen(game, "assets/scene1.png", (378,135,427,217), "key", "You Need To Leave but the Door is Locked!")
-scene2 = GameScreen(game, "assets/scene2.png", (117,54,329,412), None, "You Got the Key!")
-scene3 = GameScreen(game, "assets/scene3.png", (117,54,329,412), None, "The Door is Open!")
+    scene1 = GameScreen(game, "assets/scene1.png", (378,135,427,217), "key", "You Need To Leave but the Door is Locked!")
+    scene2 = GameScreen(game, "assets/scene2.png", (117,54,329,412), None, "You Got the Key!")
+    scene3 = GameScreen(game, "assets/scene3.png", (117,54,329,412), None, "The Door is Open!")
 
-all_screens = [scene1, scene2, scene3]
+    all_screens = [scene1, scene2, scene3]
 
-game.set_game_screens(all_screens)
-game.play()
-game.mainloop()
+    game.set_game_screens(all_screens)
+    game.play()
+    game.mainloop()
