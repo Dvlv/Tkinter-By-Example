@@ -42,8 +42,6 @@ class Game(tk.Tk):
         self.help_history_var_2 = tk.StringVar(self.right_frame)
         self.help_history_var_3 = tk.StringVar(self.right_frame)
 
-        self.help_history_vars = [self.help_history_var_1, self.help_history_var_2, self.help_history_var_3]
-
         self.help_history_box_1 = tk.Label(self.right_frame, textvar=self.help_history_var_1, bg="black", fg="white", padx=10, pady=10)
         self.help_history_box_2 = tk.Label(self.right_frame, textvar=self.help_history_var_2, bg="black", fg="white", padx=10, pady=10)
         self.help_history_box_3 = tk.Label(self.right_frame, textvar=self.help_history_var_3, bg="black", fg="white", padx=10, pady=10)
@@ -145,7 +143,6 @@ class Game(tk.Tk):
             item_name = self.inventory_slots_in_use[item_number]
             if item_name:
                 self.item_in_use = item_name
-                self.screen.configure(cursor="box_spiral")
 
                 for button in self.inventory_slots:
                     button.configure(state="normal")
@@ -172,4 +169,6 @@ class Game(tk.Tk):
 
 
 if __name__ == "__main__":
+    ...
+    scene2 = GameScreen(game, "assets/scene2.png", (117,54,329,412), None, "You Got the Key!", "key")
     ...
