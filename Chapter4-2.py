@@ -183,7 +183,6 @@ class Game(tk.Tk):
                 self.item_in_use = item_name
 
                 for button in self.inventory_slots:
-                    button.configure(state="normal")
                     button.configure(bg="black")
 
                 self.inventory_slots[item_number].configure(bg="white")
@@ -192,7 +191,6 @@ class Game(tk.Tk):
     def clear_used_item(self):
         self.item_in_use = ""
         for index, button in enumerate(self.inventory_slots):
-            button.configure(state="normal")
             button.configure(bg="black")
 
             use_cmd = partial(self.use_item, item_number=index)
