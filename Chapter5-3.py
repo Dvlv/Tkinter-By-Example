@@ -4,6 +4,52 @@ import tkinter.messagebox as msg
 import configparser as cp
 import ntpath
 
+class CentralForm(tk.Toplevel):
+    def __init__(self, master):
+        super().__init__()
+        self.master = master
+
+        master_pos_x = self.master.winfo_x()
+        master_pos_y = self.master.winfo_y()
+
+        master_width = self.master.winfo_width()
+        master_height = self.master.winfo_height()
+
+        my_width = 300
+        my_height = 80
+
+        pos_x = (master_pos_x + (master_width // 2)) - (my_width // 2)
+        pos_y = (master_pos_y + (master_height // 2)) - (my_height // 2)
+
+        geometry = "{}x{}+{}+{}".format(my_width, my_height, pos_x, pos_y)
+        self.geometry(geometry)
+
+class AddSectionForm(CentralForm):
+    def __init__(self, master):
+        super().__init__(master)
+
+        self.title("Add New Section")
+
+        self.main_frame = tk.Frame(self, bg="lightgrey")
+        self.name_label = tk.Label(self.main_frame, text="Section Name", bg="lightgrey", fg="black")
+        self.name_entry = tk.Entry(self.main_frame, bg="white", fg="black")
+        self.submit_button = tk.Button(self.main_frame, text="Create", command=self.create_section)
+
+        self.main_frame.pack(expand=1, fill=tk.BOTH)
+        self.name_label.pack(side=tk.TOP, fill=tk.X)
+        self.name_entry.pack(side=tk.TOP, fill=tk.X, padx=10)
+        self.submit_button.pack(side=tk.TOP, fill=tk.X, pady=(10,0), padx=10)
+
+    def create_section(self):
+        section_name = self.name_entry.get()
+        if section_name:
+            self.master.add_section(section_name)
+            self.destroy()
+            msg.showinfo("Section Added", "Section " + section_name + " successfully added")
+        else:
+            msg.showerror("No Name", "Please enter a section name")
+
+
 class IniEditor(tk.Tk):
 
     def __init__(self):
@@ -19,6 +65,7 @@ class IniEditor(tk.Tk):
         self.menubar = tk.Menu(self, bg="lightgrey", fg="black")
 
         self.file_menu = tk.Menu(self.menubar, tearoff=0, bg="lightgrey", fg="black")
+        self.file_menu.add_command(label="New", command=self.file_new, accelerator="Ctrl+N")
         self.file_menu.add_command(label="Open", command=self.file_open, accelerator="Ctrl+O")
         self.file_menu.add_command(label="Save", command=self.file_save, accelerator="Ctrl+S")
 
@@ -41,17 +88,42 @@ class IniEditor(tk.Tk):
         self.section_select.pack(expand=1)
         self.section_select.bind("<<ListboxSelect>>", self.display_section_contents)
 
+        self.section_add_button = tk.Button(self.left_frame, text="Add Section", command=self.add_section_form)
+        self.section_add_button.pack(pady=(0,20))
+
         self.left_frame.pack(side=tk.LEFT, fill=tk.BOTH)
         self.right_frame.pack(side=tk.LEFT, expand=1, fill=tk.BOTH)
 
         self.right_frame.bind('<Configure>', self.frame_height)
 
+        self.bind("<Control-n>", self.file_new)
         self.bind("<Control-o>", self.file_open)
         self.bind("<Control-s>", self.file_save)
+
+    def add_section_form(self):
+        if not self.active_ini:
+            msg.showerror("No File Open", "Please open an ini file first")
+            return
+
+        AddSectionForm(self)
+
+    def add_section(self, section_name):
+        self.active_ini[section_name] = {}
+        self.populate_section_select_box()
 
     def frame_height(self, evt):
         new_height = self.winfo_height()
         self.right_frame.configure(height=new_height)
+
+    def file_new(self, evt=None):
+        ini_file = filedialog.asksaveasfilename()
+
+        while ini_file and not ini_file.endswith(".ini"):
+            msg.showerror("Wrong Filetype", "Filename must end in .ini")
+            ini_file = filedialog.askopenfilename()
+
+        if ini_file:
+            self.parse_ini_file(ini_file)
 
     def file_open(self, evt=None):
         ini_file = filedialog.askopenfilename()
@@ -81,11 +153,19 @@ class IniEditor(tk.Tk):
 
         msg.showinfo("Saved", "File Saved Successfully")
 
+    def add_item(self):
+        pass
+
     def parse_ini_file(self, ini_file):
         self.active_ini = cp.ConfigParser()
         self.active_ini.read(ini_file)
         self.active_ini_filename = ini_file
+        self.populate_section_select_box()
 
+        file_name = ": ".join([ntpath.basename(ini_file), ini_file])
+        self.file_name_var.set(file_name)
+
+    def populate_section_select_box(self):
         self.section_select.delete(0, tk.END)
 
         for index, section in enumerate(self.active_ini.sections()):
@@ -94,9 +174,6 @@ class IniEditor(tk.Tk):
         if "DEFAULT" in self.active_ini:
             self.section_select.insert(len(self.active_ini.sections()) + 1, "DEFAULT")
             self.ini_elements["DEFAULT"] = {}
-
-        file_name = ": ".join([ntpath.basename(ini_file), ini_file])
-        self.file_name_var.set(file_name)
 
     def display_section_contents(self, evt):
         if not self.active_ini:
@@ -136,6 +213,9 @@ class IniEditor(tk.Tk):
 
         save_button = tk.Button(self.right_frame, text="Save Changes", command=self.file_save)
         save_button.pack(side=tk.BOTTOM, pady=(0,20))
+
+        add_button = tk.Button(self.right_frame, text="Add Item", command=self.add_item)
+        add_button.pack(side=tk.BOTTOM, pady=(0,20))
 
 
 if __name__ == "__main__":
