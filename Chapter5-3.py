@@ -5,7 +5,7 @@ import configparser as cp
 import ntpath
 
 class CentralForm(tk.Toplevel):
-    def __init__(self, master):
+    def __init__(self, master, my_height=80):
         super().__init__()
         self.master = master
 
@@ -16,13 +16,13 @@ class CentralForm(tk.Toplevel):
         master_height = self.master.winfo_height()
 
         my_width = 300
-        my_height = 80
 
         pos_x = (master_pos_x + (master_width // 2)) - (my_width // 2)
         pos_y = (master_pos_y + (master_height // 2)) - (my_height // 2)
 
         geometry = "{}x{}+{}+{}".format(my_width, my_height, pos_x, pos_y)
         self.geometry(geometry)
+
 
 class AddSectionForm(CentralForm):
     def __init__(self, master):
@@ -47,7 +47,41 @@ class AddSectionForm(CentralForm):
             self.destroy()
             msg.showinfo("Section Added", "Section " + section_name + " successfully added")
         else:
-            msg.showerror("No Name", "Please enter a section name")
+            msg.showerror("No Name", "Please enter a section name", parent=self)
+
+
+class AddItemForm(CentralForm):
+    def __init__(self,  master):
+
+        my_height = 120
+
+        super().__init__(master, my_height)
+
+        self.title("Add New Item")
+
+        self.main_frame = tk.Frame(self, bg="lightgrey")
+        self.name_label = tk.Label(self.main_frame, text="Item Name", bg="lightgrey", fg="black")
+        self.name_entry = tk.Entry(self.main_frame, bg="white", fg="black")
+        self.value_label = tk.Label(self.main_frame, text="Item Value", bg="lightgrey", fg="black")
+        self.value_entry = tk.Entry(self.main_frame, bg="white", fg="black")
+        self.submit_button = tk.Button(self.main_frame, text="Create", command=self.create_item)
+
+        self.main_frame.pack(fill=tk.BOTH, expand=1)
+        self.name_label.pack(side=tk.TOP, fill=tk.X)
+        self.name_entry.pack(side=tk.TOP, fill=tk.X, padx=10)
+        self.value_label.pack(side=tk.TOP, fill=tk.X)
+        self.value_entry.pack(side=tk.TOP, fill=tk.X, padx=10)
+        self.submit_button.pack(side=tk.TOP, fill=tk.X, pady=(10,0), padx=10)
+
+    def create_item(self):
+        item_name = self.name_entry.get()
+        item_value = self.value_entry.get()
+        if item_name and item_value:
+            self.master.add_item(item_name, item_value)
+            self.destroy()
+            msg.showinfo("Item Added", item_name + " successfully added")
+        else:
+            msg.showerror("Missing Info", "Please enter a name and value", parent=self)
 
 
 class IniEditor(tk.Tk):
@@ -153,8 +187,13 @@ class IniEditor(tk.Tk):
 
         msg.showinfo("Saved", "File Saved Successfully")
 
-    def add_item(self):
-        pass
+    def add_item_form(self):
+        AddItemForm(self)
+
+    def add_item(self, item_name, item_value):
+        chosen_section = self.section_select.get(self.section_select.curselection())
+        self.active_ini[chosen_section][item_name] = item_value
+        self.display_section_contents()
 
     def parse_ini_file(self, ini_file):
         self.active_ini = cp.ConfigParser()
@@ -175,7 +214,7 @@ class IniEditor(tk.Tk):
             self.section_select.insert(len(self.active_ini.sections()) + 1, "DEFAULT")
             self.ini_elements["DEFAULT"] = {}
 
-    def display_section_contents(self, evt):
+    def display_section_contents(self, evt=None):
         if not self.active_ini:
             msg.showerror("No File Open", "Please open an ini file first")
             return
@@ -214,7 +253,7 @@ class IniEditor(tk.Tk):
         save_button = tk.Button(self.right_frame, text="Save Changes", command=self.file_save)
         save_button.pack(side=tk.BOTTOM, pady=(0,20))
 
-        add_button = tk.Button(self.right_frame, text="Add Item", command=self.add_item)
+        add_button = tk.Button(self.right_frame, text="Add Item", command=self.add_item_form)
         add_button.pack(side=tk.BOTTOM, pady=(0,20))
 
 
