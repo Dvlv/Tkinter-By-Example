@@ -1,4 +1,5 @@
 import tkinter as tk
+import decimal
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -47,6 +48,26 @@ class Editor(tk.Tk):
         offset_y = int(offset_y)
         self.complete_menu.post(offset_x + x, offset_y + y)
         self.main_text.bind('<Down>', self.focus_menu_item)
+
+    def display_autofill_menu(self, evt=None):
+        current_index = self.main_text.index(tk.INSERT)
+        start = self.adjust_floating_index(current_index)
+        currently_typed_word = self.main_text.get(start + ' wordstart', tk.END)
+        print(currently_typed_word)
+        print(str(float(current_index)))
+
+    def adjust_floating_index(self, number):
+        num_decimal_places = len(number.split(".")[1])
+        number_float = float(number)
+        if num_decimal_places > 1:
+            number_string = '{:.2f}'
+            number_float -= 0.01
+        else:
+            number_string = '{:.1f}'
+            number_float -= 0.1
+        number_to_return = number_string.format(number_float)
+
+        return number_to_return
 
     def focus_menu_item(self, evt=None):
         self.complete_menu.focus_set()
