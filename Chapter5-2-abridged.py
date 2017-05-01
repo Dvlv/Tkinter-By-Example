@@ -3,20 +3,16 @@
 class IniEditor(tk.Tk):
 
     def __init__(self):
-        super().__init__()
-
         ...
-
         self.left_frame = tk.Frame(self, width=200, bg="grey")
         self.left_frame.pack_propagate(0)
 
         self.right_frame = tk.Frame(self, width=400, bg="lightgrey")
         self.right_frame.pack_propagate(0)
-
         ...
-
+        self.file_name_label.pack(side=tk.TOP, expand=1, fill=tk.X, anchor="n")
+        ...
         self.right_frame.bind('<Configure>', self.frame_height)
-
         ...
 
     def frame_height(self, evt):
