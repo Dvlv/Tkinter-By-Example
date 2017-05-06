@@ -12,12 +12,11 @@ class Editor(tk.Tk):
         self.WINDOW_TITLE = "Text Editor"
 
         self.AUTOCOMPLETE_WORDS = [
-            "def", "import", "if", "elif", "else", "while",
+            "def", "import", "as", "if", "elif", "else", "while",
             "for", "try", "except", "print", "True", "False",
             "self", "None"
         ]
-        self.KEYWORDS_1 = ["import", "def", "try", "except", "self"]
-        self.KEYWORDS_CAPS = ["True", "False", "None"]
+        self.KEYWORDS_1 = ["import", "as", "def", "try", "except", "self"]
         self.KEYWORDS_FLOW = ["if", "else", "elif", "try", "except", "for", "while"]
         self.KEYWORDS_FUNCTIONS = ["print", "list", "dict", "set", "int", "float", "str"]
 
@@ -247,8 +246,6 @@ class Editor(tk.Tk):
 
             if stripped_word in self.KEYWORDS_1:
                 self.main_text.tag_add("keyword1", start_index, end_index)
-            elif stripped_word in self.KEYWORDS_CAPS:
-                self.main_text.tag_add("keywordcaps", start_index, end_index)
             elif stripped_word in self.KEYWORDS_FLOW:
                 self.main_text.tag_add("keywordflow", start_index, end_index)
             elif stripped_word in self.KEYWORDS_FUNCTIONS:
