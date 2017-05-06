@@ -218,24 +218,15 @@ class Editor(tk.Tk):
             single_strings = re.findall(self.STRING_REGEX_SINGLE, stripped_word)
 
             for number in self.NUMBER_REGEX.finditer(line_text):
-                matched_number = number.group()
-                start, end = number.span()
-                start_index = ".".join([line_number, str(start)])
-                end_index = ".".join([line_number, str(end)])
+                start_index, end_index = self.get_regex_match_span(number, line_number)
                 self.main_text.tag_add("digit", start_index, end_index)
 
             for keyword in self.KEYWORDS_REGEX.finditer(line_text):
-                matched_number = keyword.group()
-                start, end = keyword.span()
-                start_index = ".".join([line_number, str(start)])
-                end_index = ".".join([line_number, str(end)])
+                start_index, end_index = self.get_regex_match_span(keyword, line_number)
                 self.main_text.tag_add("keywordcaps", start_index, end_index)
 
             for self_instance in self.SELF_REGEX.finditer(line_text):
-                matched_number = self_instance.group()
-                start, end = self_instance.span()
-                start_index = ".".join([line_number, str(start)])
-                end_index = ".".join([line_number, str(end)])
+                start_index, end_index = self.get_regex_match_span(self_instance, line_number)
                 self.main_text.tag_add("keyword1", start_index, end_index)
 
             if len(double_strings) > 0:
@@ -275,6 +266,13 @@ class Editor(tk.Tk):
             number_of_spaces = 0
 
         return number_of_spaces
+
+    def get_regex_match_span(self, match, line_number):
+        start, end = match.span()
+        start_index = ".".join([line_number, str(start)])
+        end_index = ".".join([line_number, str(end)])
+
+        return (start_index, end_index)
 
     def on_key_release(self, evt=None):
         self.display_autocomplete_menu()
