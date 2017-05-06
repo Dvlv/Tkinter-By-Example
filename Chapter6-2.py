@@ -1,3 +1,4 @@
+import re
 import tkinter as tk
 from tkinter import filedialog
 from functools import partial
@@ -8,8 +9,20 @@ class Editor(tk.Tk):
 
         self.FONT_SIZE = 12
         self.FONT_OFFSET = self.FONT_SIZE / 1.5
-        self.AUTOCOMPLETE_WORDS = ["def", "import", "if", "else", "while", "for","try:", "except:", "print(", "True", "False"]
+        self.AUTOCOMPLETE_WORDS = [
+            "def", "import", "if", "elif", "else", "while",
+            "for", "try", "except", "print", "True", "False",
+            "self", "None"
+        ]
+        self.KEYWORDS_1 = ["import", "def", "try", "except", "self"]
+        self.KEYWORDS_CAPS = ["True", "False", "None"]
+        self.KEYWORDS_FLOW = ["if", "else", "elif", "try", "except", "for", "while"]
+        self.KEYWORDS_FUNCTIONS = ["print", "list", "dict", "set", "int", "float", "str"]
         self.WINDOW_TITLE = "Text Editor"
+        self.SPACES_REGEX = re.compile("^\s*")
+        self.STRING_REGEX_SINGLE = re.compile("'[^'\r\n]*'")
+        self.STRING_REGEX_DOUBLE = re.compile('"[^"\r\n]*"')
+        self.NUMBER_REGEX = re.compile("(?=\(*)(?<![a-z])\d*\.*\d(?=\)*\,*)")
 
         self.open_file = ""
 
@@ -31,11 +44,17 @@ class Editor(tk.Tk):
 
         self.main_text.pack(expand=1, fill=tk.BOTH)
 
-        self.main_text.tag_config("keyword", foreground="orange")
+        self.main_text.tag_config("keyword1", foreground="orange")
+        self.main_text.tag_config("keywordcaps", foreground="navy")
+        self.main_text.tag_config("keywordflow", foreground="purple")
+        self.main_text.tag_config("keywordfunc", foreground="darkgrey")
+        self.main_text.tag_config("decorator", foreground="khaki")
+        self.main_text.tag_config("digit", foreground="red")
+        self.main_text.tag_config("float", foreground="blue")
+        self.main_text.tag_config("string", foreground="green")
 
         self.main_text.bind("<space>", self.destroy_autocomplete_menu)
-        self.main_text.bind("<space>", self.tag_keywords)
-        self.main_text.bind("<KeyRelease>", self.display_autocomplete_menu)
+        self.main_text.bind("<KeyRelease>", self.on_key_release)
         self.main_text.bind("<Tab>", self.insert_spaces)
 
         self.bind("<Control-s>", self.file_save)
@@ -64,6 +83,14 @@ class Editor(tk.Tk):
                         self.main_text.insert(index, line)
 
         self.title(" - ".join([self.WINDOW_TITLE, self.open_file]))
+
+        final_index = self.main_text.index(tk.END)
+        final_line_number = int(final_index.split(".")[0])
+
+        for line_number in range(final_line_number):
+            line_to_tag = ".".join([str(line_number), "0"])
+            self.tag_keywords(None, line_to_tag)
+
 
     def file_save(self, evt=None):
         if not self.open_file:
@@ -162,20 +189,87 @@ class Editor(tk.Tk):
         except tk.TclError:
             pass
 
-    def tag_keywords(self, evt=None):
-        current_index = self.main_text.index(tk.INSERT)
+    def tag_keywords(self, evt=None, current_index=None):
+        if not current_index:
+            current_index = self.main_text.index(tk.INSERT)
         line_number = current_index.split(".")[0]
         line_beginning = ".".join([line_number, "0"])
-        line_words = self.main_text.get(line_beginning, line_beginning + ' lineend').split()
-        y_position = 0
+        line_text = self.main_text.get(line_beginning, line_beginning + ' lineend')
+        line_words = line_text.split()
+        number_of_spaces = self.number_of_leading_spaces(line_text)
+        y_position = number_of_spaces
+#
         for word in line_words:
+            stripped_word = word.strip('():,')
+            original_word_length = len(word)
+            stripped_word_length = len(stripped_word)
+            stripped_offset = original_word_length - stripped_word_length
+
             word_start = str(y_position)
-            word_end = str(y_position + len(word))
-            if word in self.AUTOCOMPLETE_WORDS:
-                start_index = ".".join([line_number, word_start])
-                end_index = ".".join([line_number, word_end])
-                self.main_text.tag_add("keyword", start_index, end_index)
+            word_end = str(y_position + len(stripped_word))
+            start_index = ".".join([line_number, word_start])
+            end_index = ".".join([line_number, word_end])
+
+            double_strings = re.findall(self.STRING_REGEX_DOUBLE, stripped_word)
+            single_strings = re.findall(self.STRING_REGEX_SINGLE, stripped_word)
+            numbers = re.findall(self.NUMBER_REGEX, stripped_word)
+
+            for number in self.NUMBER_REGEX.finditer(line_text):
+                matched_number = number.group()
+                start, end = number.span()
+                start_index = ".".join([line_number, str(start)])
+                end_index = ".".join([line_number, str(end)])
+                self.main_text.tag_add("digit", start_index, end_index)
+
+            if len(numbers) > 0:
+                for number in numbers:
+                    start = line_text.find(number)
+                    end = start + len(number)
+                    start_index = ".".join([line_number, str(start)])
+                    end_index = ".".join([line_number, str(end)])
+                    self.main_text.tag_add("digit", start_index, end_index)
+
+            if len(double_strings) > 0:
+                for string in double_strings:
+                    start = line_text.find(string)
+                    end = start + len(string)
+                    start_index = ".".join([line_number, str(start)])
+                    end_index = ".".join([line_number, str(end)])
+                    self.main_text.tag_add("string", start_index, end_index)
+
+            if len(single_strings) > 0:
+                for string in single_strings:
+                    start = line_text.find(string)
+                    end = start + len(string)
+                    start_index = ".".join([line_number, str(start)])
+                    end_index = ".".join([line_number, str(end)])
+                    self.main_text.tag_add("string", start_index, end_index)
+
+            if stripped_word in self.KEYWORDS_1:
+                self.main_text.tag_add("keyword1", start_index, end_index)
+            elif stripped_word in self.KEYWORDS_CAPS:
+                self.main_text.tag_add("keywordcaps", start_index, end_index)
+            elif stripped_word in self.KEYWORDS_FLOW:
+                self.main_text.tag_add("keywordflow", start_index, end_index)
+            elif stripped_word in self.KEYWORDS_FUNCTIONS:
+                self.main_text.tag_add("keywordfunc", start_index, end_index)
+            elif stripped_word.startswith("@"):
+                self.main_text.tag_add("decorator", start_index, end_index)
+
             y_position += len(word) + 1
+
+    def number_of_leading_spaces(self, line):
+        spaces = re.search(self.SPACES_REGEX, line)
+        if spaces.group(0) is not None:
+            number_of_spaces = len(spaces.group(0))
+        else:
+            number_of_spaces = 0
+
+        return number_of_spaces
+
+    def on_key_release(self, evt=None):
+        self.display_autocomplete_menu()
+        self.tag_keywords()
 
 
 if __name__ == "__main__":
