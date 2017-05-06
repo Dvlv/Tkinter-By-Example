@@ -11,6 +11,7 @@ class Editor(tk.Tk):
         self.AUTOCOMPLETE_WORDS = ['def', 'if', 'while', 'for', 'print', 'True', 'False']
 
         self.open_file = ''
+        self.insert_point_store = ''
 
         self.title('Text Editor')
         self.geometry('800x600')
@@ -49,8 +50,12 @@ class Editor(tk.Tk):
             self.open_file = file_to_open
 
             with open(file_to_open, 'r') as file_contents:
+                file_lines = file_contents.readlines()
                 self.main_text.delete(1.0, tk.END)
-                self.main_text.insert(1.0, file_contents.read())
+                if len(file_lines) > 0:
+                    for index, line in enumerate(file_lines):
+                        index = float(index)
+                        self.main_text.insert(index, line)
 
         self.title('Text Editor - ' + self.open_file)
 
@@ -61,12 +66,12 @@ class Editor(tk.Tk):
         with open(self.open_file, 'w') as open_file:
             open_file.write(new_contents)
 
-    def display_menu(self, evt=None, words=None, currently_typed_word=None):
+    def display_menu(self, evt=None, words=None, currently_typed_word=None, current_index=None):
         self.destroy_autofill_menu()
         if words and currently_typed_word:
             self.complete_menu = tk.Menu(self, tearoff=0, bg="lightgrey", fg="black")
             for word in words:
-                insert_word_callback = partial(self.insert_word, word=word, part=currently_typed_word)
+                insert_word_callback = partial(self.insert_word, word=word, part=currently_typed_word, index=current_index)
                 self.complete_menu.add_command(label=word, command=insert_word_callback)
 
         coords = str(self.main_text.index(tk.INSERT)).split('.')
@@ -96,11 +101,12 @@ class Editor(tk.Tk):
         suggestions = []
 
         try:
-            currently_typed_word = self.main_text.get(start + ' wordstart', tk.END)
+            currently_typed_word = self.main_text.get(start + ' wordstart', tk.INSERT)
         except tk.TclError:
             currently_typed_word = ''
 
         currently_typed_word = str(currently_typed_word).strip()
+        print(currently_typed_word)
 
         if currently_typed_word:
             self.destroy_autofill_menu()
@@ -110,7 +116,7 @@ class Editor(tk.Tk):
                     suggestions.append(word)
 
             if len(suggestions) > 0:
-                self.display_menu(None, suggestions, currently_typed_word)
+                self.display_menu(None, suggestions, currently_typed_word, current_index)
 
     def destroy_autofill_menu(self, evt=None):
         try:
@@ -118,10 +124,12 @@ class Editor(tk.Tk):
         except AttributeError:
             pass
 
-    def insert_word(self, word, part):
+    def insert_word(self, word, part, index):
         amount_typed = len(part)
         remaining_word = word[amount_typed:]
-        self.main_text.insert(tk.INSERT, remaining_word)
+        remaining_word_offset = ' +' + str(len(remaining_word)) + 'c'
+        self.main_text.insert(index, remaining_word)
+        self.main_text.mark_set(tk.INSERT, index + remaining_word_offset)
         self.complete_menu.destroy()
         self.main_text.focus_force()
 
@@ -140,7 +148,7 @@ class Editor(tk.Tk):
 
     def focus_menu_item(self, evt=None):
         try:
-            self.complete_menu.focus_set()
+            self.complete_menu.focus_force()
             self.complete_menu.entryconfig(0, state="active")
         except tk.TclError:
             pass
