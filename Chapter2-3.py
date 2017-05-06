@@ -51,7 +51,7 @@ class Todo(tk.Tk):
 
     def add_task(self, evt, task_text=None, from_db=False):
         if not task_text:
-            task_text = self.task_create.get(1.0,tk.END).strip()
+            task_text = self.task_create.get(1.0, tk.END).strip()
 
         if len(task_text) > 0:
             new_task = tk.Label(self.tasks_frame, text=task_text, pady=10)
