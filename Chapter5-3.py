@@ -150,7 +150,7 @@ class IniEditor(tk.Tk):
         self.right_frame.configure(height=new_height)
 
     def file_new(self, evt=None):
-        ini_file = filedialog.asksaveasfilename()
+        ini_file = filedialog.asksaveasfilename(filetypes=[("Configuration file", "*.ini")])
 
         while ini_file and not ini_file.endswith(".ini"):
             msg.showerror("Wrong Filetype", "Filename must end in .ini")
@@ -160,7 +160,7 @@ class IniEditor(tk.Tk):
             self.parse_ini_file(ini_file)
 
     def file_open(self, evt=None):
-        ini_file = filedialog.askopenfilename()
+        ini_file = filedialog.askopenfilename(filetypes=[("Configuration file", "*.ini")])
 
         while ini_file and not ini_file.endswith(".ini"):
             msg.showerror("Wrong Filetype", "Please select an ini file")
