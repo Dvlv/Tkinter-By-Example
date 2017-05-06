@@ -9,6 +9,8 @@ class Editor(tk.Tk):
 
         self.FONT_SIZE = 12
         self.FONT_OFFSET = self.FONT_SIZE / 1.5
+        self.WINDOW_TITLE = "Text Editor"
+
         self.AUTOCOMPLETE_WORDS = [
             "def", "import", "if", "elif", "else", "while",
             "for", "try", "except", "print", "True", "False",
@@ -18,11 +20,13 @@ class Editor(tk.Tk):
         self.KEYWORDS_CAPS = ["True", "False", "None"]
         self.KEYWORDS_FLOW = ["if", "else", "elif", "try", "except", "for", "while"]
         self.KEYWORDS_FUNCTIONS = ["print", "list", "dict", "set", "int", "float", "str"]
-        self.WINDOW_TITLE = "Text Editor"
+
         self.SPACES_REGEX = re.compile("^\s*")
         self.STRING_REGEX_SINGLE = re.compile("'[^'\r\n]*'")
         self.STRING_REGEX_DOUBLE = re.compile('"[^"\r\n]*"')
         self.NUMBER_REGEX = re.compile("(?=\(*)(?<![a-z])\d*\.*\d(?=\)*\,*)")
+        self.KEYWORDS_REGEX = re.compile("(?=\(*)(None|True|False)(?=\)*\,*)")
+        self.SELF_REGEX = re.compile("(?=\(*)(?<![a-z])(self)(?=\)*\,*)")
 
         self.open_file = ""
 
@@ -212,7 +216,6 @@ class Editor(tk.Tk):
 
             double_strings = re.findall(self.STRING_REGEX_DOUBLE, stripped_word)
             single_strings = re.findall(self.STRING_REGEX_SINGLE, stripped_word)
-            numbers = re.findall(self.NUMBER_REGEX, stripped_word)
 
             for number in self.NUMBER_REGEX.finditer(line_text):
                 matched_number = number.group()
@@ -221,13 +224,19 @@ class Editor(tk.Tk):
                 end_index = ".".join([line_number, str(end)])
                 self.main_text.tag_add("digit", start_index, end_index)
 
-            if len(numbers) > 0:
-                for number in numbers:
-                    start = line_text.find(number)
-                    end = start + len(number)
-                    start_index = ".".join([line_number, str(start)])
-                    end_index = ".".join([line_number, str(end)])
-                    self.main_text.tag_add("digit", start_index, end_index)
+            for keyword in self.KEYWORDS_REGEX.finditer(line_text):
+                matched_number = keyword.group()
+                start, end = keyword.span()
+                start_index = ".".join([line_number, str(start)])
+                end_index = ".".join([line_number, str(end)])
+                self.main_text.tag_add("keywordcaps", start_index, end_index)
+
+            for self_instance in self.SELF_REGEX.finditer(line_text):
+                matched_number = self_instance.group()
+                start, end = self_instance.span()
+                start_index = ".".join([line_number, str(start)])
+                end_index = ".".join([line_number, str(end)])
+                self.main_text.tag_add("keyword1", start_index, end_index)
 
             if len(double_strings) > 0:
                 for string in double_strings:
