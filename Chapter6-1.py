@@ -9,11 +9,12 @@ class Editor(tk.Tk):
         self.FONT_SIZE = 12
         self.FONT_OFFSET = self.FONT_SIZE / 1.5
         self.AUTOCOMPLETE_WORDS = ['def', 'if', 'while', 'for', 'print', 'True', 'False']
+        self.WINDOW_TITLE = 'Text Editor'
 
         self.open_file = ''
         self.insert_point_store = ''
 
-        self.title('Text Editor')
+        self.title(self.WINDOW_TITLE)
         self.geometry('800x600')
 
         self.menubar = tk.Menu(self, bg="lightgrey", fg="black")
@@ -41,7 +42,7 @@ class Editor(tk.Tk):
     def file_new(self, evt=None):
         self.open_file = filedialog.asksaveasfilename()
         self.main_text.delete(1.0, tk.END)
-        self.title('Text Editor - ' + self.open_file)
+        self.title(' - '.join([self.WINDOW_TITLE, self.open_file]))
 
     def file_open(self, evt=None):
         file_to_open = filedialog.askopenfilename()
@@ -54,10 +55,10 @@ class Editor(tk.Tk):
                 self.main_text.delete(1.0, tk.END)
                 if len(file_lines) > 0:
                     for index, line in enumerate(file_lines):
-                        index = float(index)
+                        index = float(index) + 1.0
                         self.main_text.insert(index, line)
 
-        self.title('Text Editor - ' + self.open_file)
+        self.title(' - '.join([self.WINDOW_TITLE, self.open_file]))
 
     def file_save(self, evt=None):
         if not self.open_file:
