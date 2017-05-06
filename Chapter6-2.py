@@ -201,7 +201,7 @@ class Editor(tk.Tk):
         line_words = line_text.split()
         number_of_spaces = self.number_of_leading_spaces(line_text)
         y_position = number_of_spaces
-#
+#TODO remove all tags before this
         for word in line_words:
             stripped_word = word.strip('():,')
             original_word_length = len(word)
