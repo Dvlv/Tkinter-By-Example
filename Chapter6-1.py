@@ -34,6 +34,7 @@ class Editor(tk.Tk):
 
         self.main_text.bind('<space>', self.destroy_autofill_menu)
         self.main_text.bind('<KeyRelease>', self.display_autofill_menu)
+        self.main_text.bind('<Tab>', self.insert_spaces)
 
         self.bind('<Control-s>', self.file_save)
         self.bind('<Control-o>', self.file_open)
@@ -66,6 +67,10 @@ class Editor(tk.Tk):
         new_contents = self.main_text.get(1.0, tk.END)
         with open(self.open_file, 'w') as open_file:
             open_file.write(new_contents)
+
+    def insert_spaces(self, evt=None):
+        self.main_text.insert(tk.INSERT, '    ')
+        return "break"
 
     def display_menu(self, evt=None, words=None, currently_typed_word=None, current_index=None):
         self.destroy_autofill_menu()
