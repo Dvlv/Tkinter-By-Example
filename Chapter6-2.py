@@ -24,7 +24,7 @@ class Editor(tk.Tk):
         self.STRING_REGEX_SINGLE = re.compile("'[^'\r\n]*'")
         self.STRING_REGEX_DOUBLE = re.compile('"[^"\r\n]*"')
         self.NUMBER_REGEX = re.compile("(?=\(*)(?<![a-z])\d*\.*\d(?=\)*\,*)")
-        self.KEYWORDS_REGEX = re.compile("(?=\(*)(None|True|False)(?=\)*\,*)")
+        self.KEYWORDS_REGEX = re.compile("(?=\(*)(?<![a-z])(None|True|False)(?=\)*\,*)")
         self.SELF_REGEX = re.compile("(?=\(*)(?<![a-z])(self)(?=\)*\,*)")
 
         self.open_file = ""
