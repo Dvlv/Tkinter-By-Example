@@ -78,24 +78,11 @@ class Editor(tk.Tk):
         return "break"
 
     def get_menu_coordinates(self):
-        coords = self.main_text.index(tk.INSERT).split(".")
+        bbox = self.main_text.dlineinfo(tk.INSERT)
+        menu_x = bbox[2] + self.winfo_x()
+        menu_y = bbox[1] + self.winfo_y() + self.FONT_SIZE + 2
 
-        x = int(coords[1])
-        y = int(coords[0])
-
-        offset_x = self.main_text.winfo_rootx()
-        offset_x = int(offset_x)
-
-        offset_y = self.main_text.winfo_rooty() + (self.FONT_SIZE * (y/1.5 + 1))
-        offset_y = int(offset_y)
-
-        x *= self.FONT_OFFSET
-        x = int(x)
-
-        y *= self.FONT_OFFSET
-        y = int(y)
-
-        return (offset_x + x, offset_y + y)
+        return (menu_x, menu_y)
 
     def display_autocomplete_menu(self, evt=None):
         current_index = self.main_text.index(tk.INSERT)
