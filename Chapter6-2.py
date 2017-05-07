@@ -205,9 +205,6 @@ class Editor(tk.Tk):
 
         for word in line_words:
             stripped_word = word.strip('():,')
-            original_word_length = len(word)
-            stripped_word_length = len(stripped_word)
-            stripped_offset = original_word_length - stripped_word_length
 
             word_start = str(y_position)
             word_end = str(y_position + len(stripped_word))
