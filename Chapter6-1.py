@@ -7,7 +7,6 @@ class Editor(tk.Tk):
         super().__init__()
 
         self.FONT_SIZE = 12
-        self.FONT_OFFSET = self.FONT_SIZE / 1.5
         self.AUTOCOMPLETE_WORDS = ["def", "import", "if", "else", "while", "for","try:", "except:", "print(", "True", "False"]
         self.WINDOW_TITLE = "Text Editor"
 
@@ -75,6 +74,7 @@ class Editor(tk.Tk):
 
     def insert_spaces(self, evt=None):
         self.main_text.insert(tk.INSERT, "    ")
+
         return "break"
 
     def get_menu_coordinates(self):
