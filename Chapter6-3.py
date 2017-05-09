@@ -27,7 +27,10 @@ class FindPopup(tk.Toplevel):
         self.find_label.pack(side=tk.LEFT, fill=tk.X, padx=(20,0))
         self.find_entry.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=(0,20))
 
-    def find(self):
+        self.find_entry.focus_force()
+        self.find_entry.bind("<Return>", self.find)
+
+    def find(self, evt=None):
         text_to_find = self.find_entry.get()
         if text_to_find:
             self.master.highlight_matches(text_to_find)
