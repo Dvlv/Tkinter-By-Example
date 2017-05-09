@@ -1,7 +1,54 @@
 import re
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox as msg
 from functools import partial
+
+class FindPopup(tk.Toplevel):
+    def __init__(self, master):
+        super().__init__()
+
+        self.master = master
+
+        self.title("Find in file")
+        self.center_window()
+
+        self.transient(master)
+
+        self.main_frame = tk.Frame(self, bg="lightgrey")
+
+        self.find_label = tk.Label(self.main_frame, text="Find: ", bg="lightgrey", fg="black")
+        self.find_entry = tk.Entry(self.main_frame, bg="white", fg="black")
+        self.find_button = tk.Button(self.main_frame, text="Find", bg="lightgrey", fg="black", command=self.find)
+
+        self.main_frame.pack(fill=tk.BOTH, expand=1)
+
+        self.find_button.pack(side=tk.BOTTOM, pady=(0,10))
+        self.find_label.pack(side=tk.LEFT, fill=tk.X, padx=(20,0))
+        self.find_entry.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=(0,20))
+
+    def find(self):
+        text_to_find = self.find_entry.get()
+        if text_to_find:
+            self.master.highlight_matches(text_to_find)
+
+    def center_window(self):
+        master_pos_x = self.master.winfo_x()
+        master_pos_y = self.master.winfo_y()
+
+        master_width = self.master.winfo_width()
+        master_height = self.master.winfo_height()
+
+        my_width = 300
+        my_height = 100
+
+        pos_x = (master_pos_x + (master_width // 2)) - (my_width // 2)
+        pos_y = (master_pos_y + (master_height // 2)) - (my_height // 2)
+
+        geometry = "{}x{}+{}+{}".format(my_width, my_height, pos_x, pos_y)
+        self.geometry(geometry)
+
+
 
 class Editor(tk.Tk):
     def __init__(self):
@@ -71,6 +118,7 @@ class Editor(tk.Tk):
         self.main_text.tag_config("decorator", foreground="khaki")
         self.main_text.tag_config("digit", foreground="red")
         self.main_text.tag_config("string", foreground="green")
+        self.main_text.tag_config("findmatch", background="yellow")
 
         self.main_text.bind("<space>", self.destroy_autocomplete_menu)
         self.main_text.bind("<KeyRelease>", self.on_key_release)
@@ -83,6 +131,7 @@ class Editor(tk.Tk):
         self.bind("<Control-n>", self.file_new)
 
         self.bind("<Control-a>", self.select_all)
+        self.bind("<Control-f>", self.show_find_window)
 
     def file_new(self, evt=None):
         file_name = filedialog.asksaveasfilename()
@@ -274,6 +323,24 @@ class Editor(tk.Tk):
         line_number_string = "\n".join(str(no) for no in range(int(number_of_lines)))
         self.line_numbers.insert(1.0, line_number_string)
         self.line_numbers.configure(state="disabled")
+
+    def show_find_window(self, evt=None):
+        FindPopup(self)
+
+    def highlight_matches(self, text_to_find):
+        self.main_text.tag_remove("findmatch", 1.0, tk.END)
+
+        find_regex = re.compile(text_to_find)
+        search_text_lines = self.main_text.get(1.0, tk.END).split("\n")
+
+        for line_number, line in enumerate(search_text_lines):
+            line_number += 1
+            for match in find_regex.finditer(line):
+                start, end = match.span()
+                start_index = ".".join([str(line_number), str(start)])
+                end_index = ".".join([str(line_number), str(end)])
+                self.main_text.tag_add("findmatch", start_index, end_index)
+
 
 
 if __name__ == "__main__":
