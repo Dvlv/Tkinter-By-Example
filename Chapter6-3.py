@@ -15,25 +15,47 @@ class FindPopup(tk.Toplevel):
 
         self.transient(master)
 
+        self.matches_are_highlighted = False
+
         self.main_frame = tk.Frame(self, bg="lightgrey")
+        self.button_frame = tk.Frame(self.main_frame, bg="lightgrey")
 
         self.find_label = tk.Label(self.main_frame, text="Find: ", bg="lightgrey", fg="black")
         self.find_entry = tk.Entry(self.main_frame, bg="white", fg="black")
-        self.find_button = tk.Button(self.main_frame, text="Find", bg="lightgrey", fg="black", command=self.find)
+        self.find_button = tk.Button(self.button_frame, text="Find", bg="lightgrey", fg="black", command=self.find)
+        self.next_button = tk.Button(self.button_frame, text="Next", bg="lightgrey", fg="black", command=self.jump_to_next_match)
+        self.cancel_button = tk.Button(self.button_frame, text="Cancel", bg="lightgrey", fg="black", command=self.cancel)
 
         self.main_frame.pack(fill=tk.BOTH, expand=1)
 
-        self.find_button.pack(side=tk.BOTTOM, pady=(0,10))
+        self.find_button.pack(side=tk.LEFT, pady=(0,10), padx=(20,25))
+        self.next_button.pack(side=tk.LEFT, pady=(0,10), padx=(20,25))
+        self.cancel_button.pack(side=tk.LEFT, pady=(0,10), padx=(20,0))
+        self.button_frame.pack(side=tk.BOTTOM, fill=tk.BOTH)
         self.find_label.pack(side=tk.LEFT, fill=tk.X, padx=(20,0))
         self.find_entry.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=(0,20))
 
         self.find_entry.focus_force()
-        self.find_entry.bind("<Return>", self.find)
+        self.find_entry.bind("<Return>", self.jump_to_next_match)
+        self.bind("<Escape>", self.cancel)
 
     def find(self, evt=None):
         text_to_find = self.find_entry.get()
         if text_to_find:
             self.master.highlight_matches(text_to_find)
+            self.matches_are_highlighted = True
+
+    def jump_to_next_match(self, evt=None):
+        text_to_find = self.find_entry.get()
+        if text_to_find:
+            if not self.matches_are_highlighted:
+                self.master.highlight_matches(text_to_find)
+                self.matches_are_highlighted = True
+            self.master.next_match()
+
+    def cancel(self, evt=None):
+        self.master.remove_all_find_tags()
+        self.destroy()
 
     def center_window(self):
         master_pos_x = self.master.winfo_x()
@@ -122,6 +144,7 @@ class Editor(tk.Tk):
         self.main_text.tag_config("digit", foreground="red")
         self.main_text.tag_config("string", foreground="green")
         self.main_text.tag_config("findmatch", background="yellow")
+        self.main_text.tag_config("findmatchactive", background="cyan")
 
         self.main_text.bind("<space>", self.destroy_autocomplete_menu)
         self.main_text.bind("<KeyRelease>", self.on_key_release)
@@ -332,6 +355,8 @@ class Editor(tk.Tk):
 
     def highlight_matches(self, text_to_find):
         self.main_text.tag_remove("findmatch", 1.0, tk.END)
+        self.match_coordinates = []
+        self.current_match = -1
 
         find_regex = re.compile(text_to_find)
         search_text_lines = self.main_text.get(1.0, tk.END).split("\n")
@@ -343,7 +368,25 @@ class Editor(tk.Tk):
                 start_index = ".".join([str(line_number), str(start)])
                 end_index = ".".join([str(line_number), str(end)])
                 self.main_text.tag_add("findmatch", start_index, end_index)
+                self.match_coordinates.append((start_index, end_index))
 
+    def next_match(self, evt=None):
+        try:
+            current_target, current_target_end = self.match_coordinates[self.current_match]
+            self.main_text.tag_remove("sel", current_target, current_target_end)
+            self.main_text.tag_add("findmatch", current_target, current_target_end)
+        except IndexError:
+            pass
+
+        self.current_match = self.current_match + 1
+        next_target, target_end = self.match_coordinates[self.current_match]
+        self.main_text.mark_set(tk.INSERT, next_target)
+        self.main_text.tag_remove("findmatch", next_target, target_end)
+        self.main_text.tag_add("sel", next_target, target_end)
+        self.main_text.see(next_target)
+
+    def remove_all_find_tags(self):
+        self.main_text.tag_remove("findmatch", 1.0, tk.END)
 
 
 if __name__ == "__main__":
