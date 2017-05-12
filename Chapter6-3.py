@@ -22,7 +22,7 @@ class FindPopup(tk.Toplevel):
 
         self.find_label = tk.Label(self.main_frame, text="Find: ", bg="lightgrey", fg="black")
         self.find_entry = tk.Entry(self.main_frame, bg="white", fg="black")
-        self.find_button = tk.Button(self.button_frame, text="Find", bg="lightgrey", fg="black", command=self.find)
+        self.find_button = tk.Button(self.button_frame, text="Find All", bg="lightgrey", fg="black", command=self.find)
         self.next_button = tk.Button(self.button_frame, text="Next", bg="lightgrey", fg="black", command=self.jump_to_next_match)
         self.cancel_button = tk.Button(self.button_frame, text="Cancel", bg="lightgrey", fg="black", command=self.cancel)
 
@@ -38,6 +38,8 @@ class FindPopup(tk.Toplevel):
         self.find_entry.focus_force()
         self.find_entry.bind("<Return>", self.jump_to_next_match)
         self.bind("<Escape>", self.cancel)
+
+        self.protocol("WM_DELETE_WINDOW", self.cancel)
 
     def find(self, evt=None):
         text_to_find = self.find_entry.get()
@@ -120,7 +122,14 @@ class Editor(tk.Tk):
         self.file_menu.add_command(label="Open", command=self.file_open, accelerator="Ctrl+O")
         self.file_menu.add_command(label="Save", command=self.file_save, accelerator="Ctrl+S")
 
+        self.edit_menu = tk.Menu(self.menubar, tearoff=0, bg="lightgrey", fg="black")
+        self.edit_menu.add_command(label="Cut", command=self.edit_cut, accelerator="Ctrl+X")
+        self.edit_menu.add_command(label="Paste", command=self.edit_paste, accelerator="Ctrl+V")
+        self.edit_menu.add_command(label="Undo", command=self.edit_undo, accelerator="Ctrl+Z")
+        self.edit_menu.add_command(label="Redo", command=self.edit_redo, accelerator="Ctrl+Y")
+
         self.menubar.add_cascade(label="File", menu=self.file_menu)
+        self.menubar.add_cascade(label="Edit", menu=self.edit_menu)
 
         self.configure(menu=self.menubar)
 
@@ -130,7 +139,7 @@ class Editor(tk.Tk):
         self.line_numbers.pack(side=tk.LEFT, fill=tk.Y)
 
         self.main_text = tk.Text(self, bg="white", fg="black", font=("Ubuntu Mono", self.FONT_SIZE))
-        self.scrollbar = tk.Scrollbar(self.main_text, orient="vertical", command=self.main_text.yview)
+        self.scrollbar = tk.Scrollbar(self.main_text, orient="vertical", command=self.scroll_text_and_line_numbers)
         self.main_text.configure(yscrollcommand=self.scrollbar.set)
 
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -150,7 +159,7 @@ class Editor(tk.Tk):
         self.main_text.bind("<KeyRelease>", self.on_key_release)
         self.main_text.bind("<Tab>", self.insert_spaces)
 
-        self.main_text.bind("<Control-y>", self.redo)
+        self.main_text.bind("<Control-y>", self.edit_redo)
 
         self.bind("<Control-s>", self.file_save)
         self.bind("<Control-o>", self.file_open)
@@ -158,6 +167,37 @@ class Editor(tk.Tk):
 
         self.bind("<Control-a>", self.select_all)
         self.bind("<Control-f>", self.show_find_window)
+
+        self.main_text.bind('<MouseWheel>', self.scroll_text_and_line_numbers)
+        self.main_text.bind('<Button-4>', self.scroll_text_and_line_numbers)
+        self.main_text.bind('<Button-5>', self.scroll_text_and_line_numbers)
+
+        self.line_numbers.bind('<MouseWheel>', self.skip_event)
+        self.line_numbers.bind('<Button-4>', self.skip_event)
+        self.line_numbers.bind('<Button-5>', self.skip_event)
+
+    def skip_event(self, evt=None):
+        return "break"
+
+    def scroll_text_and_line_numbers(self, *args):
+        try: # from scrollbar
+            self.main_text.yview_moveto(args[1])
+            self.line_numbers.yview_moveto(args[1])
+        except IndexError:
+            #from mouse MouseWheel
+            event = args[0]
+            if event.delta:
+                move = -1*(event.delta/120)
+            else:
+                if event.num == 5:
+                    move = 1
+                else:
+                    move = -1
+
+            self.main_text.yview_scroll(move, 'units')
+            self.line_numbers.yview_scroll(move, 'units')
+
+        return "break"
 
     def file_new(self, evt=None):
         file_name = filedialog.asksaveasfilename()
@@ -208,7 +248,23 @@ class Editor(tk.Tk):
 
         return "break"
 
-    def redo(self, evt=None):
+    def edit_cut(self, evt=None):
+        self.main_text.event_generate("<<Cut>>")
+
+        return "break"
+
+    def edit_paste(self, evt=None):
+        self.main_text.event_generate("<<Paste>>")
+        self.on_key_release()
+
+        return "break"
+
+    def edit_undo(self, evt=None):
+        self.main_text.event_generate("<<Undo>>")
+
+        return "break"
+
+    def edit_redo(self, evt=None):
         self.main_text.event_generate("<<Redo>>")
 
         return "break"
@@ -346,7 +402,7 @@ class Editor(tk.Tk):
         self.line_numbers.configure(state="normal")
         self.line_numbers.delete(1.0, tk.END)
         number_of_lines = self.main_text.index(tk.END).split(".")[0]
-        line_number_string = "\n".join(str(no) for no in range(int(number_of_lines)))
+        line_number_string = "\n".join(str(no+1) for no in range(int(number_of_lines)))
         self.line_numbers.insert(1.0, line_number_string)
         self.line_numbers.configure(state="disabled")
 
