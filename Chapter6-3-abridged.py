@@ -22,9 +22,9 @@ class FindPopup(tk.Toplevel):
 
         self.main_frame.pack(fill=tk.BOTH, expand=1)
 
-        self.find_button.pack(side=tk.LEFT, pady=(0,10), padx=(20,25))
-        self.next_button.pack(side=tk.LEFT, pady=(0,10), padx=(20,25))
-        self.cancel_button.pack(side=tk.LEFT, pady=(0,10), padx=(20,0))
+        self.find_button.pack(side=tk.LEFT, pady=(0,10), padx=(20,20))
+        self.next_button.pack(side=tk.LEFT, pady=(0,10), padx=(15,20))
+        self.cancel_button.pack(side=tk.LEFT, pady=(0,10), padx=(15,0))
         self.button_frame.pack(side=tk.BOTTOM, fill=tk.BOTH)
         self.find_label.pack(side=tk.LEFT, fill=tk.X, padx=(20,0))
         self.find_entry.pack(side=tk.LEFT, fill=tk.X, expand=1, padx=(0,20))
