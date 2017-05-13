@@ -1,5 +1,6 @@
 import re
 import tkinter as tk
+import tkinter.messagebox as msg
 from tkinter import filedialog
 from functools import partial
 
@@ -53,7 +54,6 @@ class FindPopup(tk.Toplevel):
         if text_to_find:
             if not self.matches_are_highlighted:
                 self.find()
-                self.matches_are_highlighted = True
             self.master.next_match()
 
     def cancel(self, evt=None):
@@ -145,7 +145,7 @@ class Editor(tk.Tk):
         self.line_numbers.pack(side=tk.LEFT, fill=tk.Y)
 
         self.main_text = tk.Text(self, bg="white", fg="black", font=("Ubuntu Mono", self.FONT_SIZE))
-        self.scrollbar = tk.Scrollbar(self.main_text, orient="vertical", command=self.scroll_text_and_line_numbers)
+        self.scrollbar = tk.Scrollbar(self, orient="vertical", command=self.scroll_text_and_line_numbers)
         self.main_text.configure(yscrollcommand=self.scrollbar.set)
 
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -159,7 +159,6 @@ class Editor(tk.Tk):
         self.main_text.tag_config("digit", foreground="red")
         self.main_text.tag_config("string", foreground="green")
         self.main_text.tag_config("findmatch", background="yellow")
-        self.main_text.tag_config("findmatchactive", background="cyan")
 
         self.main_text.bind("<space>", self.destroy_autocomplete_menu)
         self.main_text.bind("<KeyRelease>", self.on_key_release)
@@ -440,12 +439,21 @@ class Editor(tk.Tk):
         except IndexError:
             pass
 
-        self.current_match = self.current_match + 1
-        next_target, target_end = self.match_coordinates[self.current_match]
-        self.main_text.mark_set(tk.INSERT, next_target)
-        self.main_text.tag_remove("findmatch", next_target, target_end)
-        self.main_text.tag_add("sel", next_target, target_end)
-        self.main_text.see(next_target)
+        try:
+            self.current_match = self.current_match + 1
+            next_target, target_end = self.match_coordinates[self.current_match]
+        except IndexError:
+            if len(self.match_coordinates) == 0:
+                msg.showinfo("No Matches", "No Matches Found")
+            else:
+                if msg.askyesno("Wrap Search?", "Reached end of file. Continue from the top?"):
+                    self.current_match = -1
+                    self.next_match()
+        else:
+            self.main_text.mark_set(tk.INSERT, next_target)
+            self.main_text.tag_remove("findmatch", next_target, target_end)
+            self.main_text.tag_add("sel", next_target, target_end)
+            self.main_text.see(next_target)
 
     def remove_all_find_tags(self):
         self.main_text.tag_remove("findmatch", 1.0, tk.END)
