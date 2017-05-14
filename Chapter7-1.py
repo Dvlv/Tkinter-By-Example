@@ -37,8 +37,7 @@ class CountingThread(threading.Thread):
         now = datetime.datetime.now()
         if now < self.end_time:
             time_difference = self.end_time - now
-            hours, remainder = divmod(time_difference.seconds, 3600)
-            mins, secs = divmod(remainder, 60)
+            mins, secs = divmod(time_difference.seconds, 60)
             time_string = "{:02d}:{:02d}".format(mins, secs)
             if not self.force_quit:
                 self.master.update_time_remaining(time_string)
@@ -80,7 +79,6 @@ class Timer(tk.Tk):
         #in_25_mins = now + datetime.timedelta(seconds=8)
         worker = CountingThread(self, now, in_25_mins)
         self.worker = worker
-        self.start_time = now
 
     def start(self):
         if not hasattr(self, "worker"):
