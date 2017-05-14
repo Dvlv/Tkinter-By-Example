@@ -22,7 +22,7 @@ class LogWindow(tk.Toplevel):
         for index, date in enumerate(dates):
             dates[index] = date[0].split()[0]
 
-        dates = sorted(list(set(dates)))[::-1]
+        dates = sorted(set(dates), reverse=True)
 
         for date in dates:
             tab = tk.Frame(self.notebook)

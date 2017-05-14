@@ -62,7 +62,7 @@ class LogWindow(tk.Toplevel):
         for index, date in enumerate(dates):
             dates[index] = date[0].split()[0]
 
-        dates = sorted(list(set(dates)))[::-1]
+        dates = sorted(set(dates), reverse=True)
 
         for date in dates:
             tab = tk.Frame(self.notebook)
@@ -92,8 +92,8 @@ class LogWindow(tk.Toplevel):
                 task_time_pretty = "{}:{}".format(task_time_pieces[0], task_time_pieces[1])
                 tree.insert('', tk.END, values=(task_name, task_finished_text, task_time_pretty))
 
-            tree.pack(fill=tk.BOTH, expand=1)
 
+            tree.pack(fill=tk.BOTH, expand=1)
             self.notebook.add(tab, text=date)
 
         self.notebook.pack(fill=tk.BOTH, expand=1)
