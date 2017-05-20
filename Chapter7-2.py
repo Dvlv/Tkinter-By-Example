@@ -141,8 +141,8 @@ class Timer(tk.Tk):
 
     def setup_worker(self):
         now = datetime.datetime.now()
-        #in_25_mins = now + datetime.timedelta(minutes=25)
-        in_25_mins = now + datetime.timedelta(seconds=2)
+        in_25_mins = now + datetime.timedelta(minutes=25)
+        #in_25_mins = now + datetime.timedelta(seconds=2)
         worker = CountingThread(self, now, in_25_mins)
         self.worker = worker
 

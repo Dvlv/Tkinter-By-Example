@@ -61,8 +61,7 @@ class LogWindow(tk.Toplevel):
         style.configure("Treeview", font=(None,12))
         style.configure("Treeview.Heading", font=(None, 14))
 
-        dates_sql = "SELECT DISTINCT date FROM pymodoros ORDER BY date DESC"
-        dates = self.master.runQuery(dates_sql, None, True)
+        dates = self.master.get_unique_dates()
 
         for index, date in enumerate(dates):
             dates[index] = date[0].split()[0]
@@ -126,7 +125,7 @@ class Timer(tk.Tk):
         style.configure("TLabel", foreground="black", background="lightgrey", font=(None, 16), anchor="center")
         style.configure("B.TLabel", font=(None, 40))
         style.configure("B.TButton", foreground="black", background="lightgrey", font=(None, 16), anchor="center")
-        style.configure("TEntry", foregound="black", background="white", height=14)
+        style.configure("TEntry", foregound="black", background="white")
 
         self.menubar = tk.Menu(self, bg="lightgrey", fg="black")
 
@@ -162,14 +161,18 @@ class Timer(tk.Tk):
 
     def setup_worker(self):
         now = datetime.datetime.now()
-        #in_25_mins = now + datetime.timedelta(minutes=25)
-        in_25_mins = now + datetime.timedelta(seconds=2)
+        in_25_mins = now + datetime.timedelta(minutes=25)
+        #in_25_mins = now + datetime.timedelta(seconds=2)
         worker = CountingThread(self, now, in_25_mins)
         self.worker = worker
 
     def start(self):
         if not self.task_name_entry.get():
             msg.showerror("No Task", "Please enter a task name")
+            return
+
+        if self.task_is_duplicate():
+            msg.showerror("Task Duplicate", "Please enter a different task name")
             return
 
         if not hasattr(self, "worker"):
@@ -219,7 +222,7 @@ class Timer(tk.Tk):
 
     def mark_finished_task(self):
         task_name = self.task_name_entry.get()
-        add_task_sql = "UPDATE pymodoros SET finished = ? WHERE task = ? and date = ?"
+        add_task_sql = "UPDATE pymodoros SET finished = ? WHERE task = ? AND date = ?"
         self.runQuery(add_task_sql, ("1", task_name, self.task_started_time))
 
     def show_log_window(self, evt=None):
@@ -232,6 +235,12 @@ class Timer(tk.Tk):
         else:
             self.destroy()
 
+    def get_unique_dates(self):
+        dates_sql = "SELECT DISTINCT date FROM pymodoros ORDER BY date DESC"
+        dates = self.runQuery(dates_sql, None, True)
+
+        return dates
+
     def get_tasks_by_date(self, date):
         tasks_sql = "SELECT * FROM pymodoros WHERE date LIKE ?"
         date_like = date + "%"
@@ -242,11 +251,20 @@ class Timer(tk.Tk):
         return tasks
 
     def delete_task(self, task_name, task_date):
-        delete_task_sql = "DELETE FROM pymodoros WHERE task = ? and date LIKE ?"
+        delete_task_sql = "DELETE FROM pymodoros WHERE task = ? AND date LIKE ?"
         task_date_like = task_date + "%"
         data = (task_name, task_date_like)
         self.runQuery(delete_task_sql, data)
 
+    def task_is_duplicate(self):
+        task_name = self.task_name_entry.get()
+        today = datetime.datetime.now().date()
+        task_exists_sql = "SELECT task FROM pymodoros WHERE task = ? AND date LIKE ?"
+        today_like = str(today) + "%"
+        data = (task_name, today_like)
+        tasks = self.runQuery(task_exists_sql, data, True)
+
+        return len(tasks)
 
     @staticmethod
     def runQuery(sql, data=None, receive=False):
