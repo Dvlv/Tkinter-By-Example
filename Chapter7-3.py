@@ -84,11 +84,7 @@ class LogWindow(tk.Toplevel):
             tree.column("finished", anchor="center")
             tree.column("time", anchor="center")
 
-            tasks_sql = "SELECT * FROM pymodoros WHERE date LIKE ?"
-            date_like = date + "%"
-            data = (date_like,)
-
-            tasks = self.master.runQuery(tasks_sql, data, True)
+            tasks = self.master.get_tasks_by_date(date)
 
             for task_name, task_finished, task_date in tasks:
                 task_finished_text = "Yes" if task_finished else "No"
@@ -110,7 +106,12 @@ class LogWindow(tk.Toplevel):
         tree = self.tab_trees[current_tab]
         selected_item_id = tree.selection()
         selected_item = tree.item(selected_item_id)
+
         if msg.askyesno("Delete Item?", "Delete " + selected_item["values"][0] + "?", parent=self):
+            task_name = selected_item["values"][0]
+            task_time = selected_item["values"][2]
+            task_date = " ".join([current_tab, task_time])
+            self.master.delete_task(task_name, task_date)
             tree.delete(selected_item_id)
 
 class Timer(tk.Tk):
@@ -143,7 +144,7 @@ class Timer(tk.Tk):
         self.time_remaining_var = tk.StringVar(self.main_frame)
         self.time_remaining_var.set("25:00")
         self.time_remaining_label = ttk.Label(self.main_frame, textvar=self.time_remaining_var, style="B.TLabel")
-        self.pause_button = ttk.Button(self.main_frame, text="Pause", command=self.pause, state="disabled")
+        self.pause_button = ttk.Button(self.main_frame, text="Pause", command=self.pause, state="disabled", style="B.TButton")
 
         self.main_frame.pack(fill=tk.BOTH, expand=1)
 
@@ -230,6 +231,22 @@ class Timer(tk.Tk):
             self.after(100, self.safe_destroy)
         else:
             self.destroy()
+
+    def get_tasks_by_date(self, date):
+        tasks_sql = "SELECT * FROM pymodoros WHERE date LIKE ?"
+        date_like = date + "%"
+        data = (date_like,)
+
+        tasks = self.runQuery(tasks_sql, data, True)
+
+        return tasks
+
+    def delete_task(self, task_name, task_date):
+        delete_task_sql = "DELETE FROM pymodoros WHERE task = ? and date LIKE ?"
+        task_date_like = task_date + "%"
+        data = (task_name, task_date_like)
+        self.runQuery(delete_task_sql, data)
+
 
     @staticmethod
     def runQuery(sql, data=None, receive=False):
