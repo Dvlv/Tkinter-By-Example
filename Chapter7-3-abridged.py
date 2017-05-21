@@ -99,7 +99,7 @@ class Timer(tk.Tk):
     def mark_finished_task(self):
         ...
 
-    def show_log_window(self, evt=None):
+    def show_log_window(self, event=None):
         ...
 
     def safe_destroy(self):

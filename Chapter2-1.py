@@ -12,9 +12,9 @@ class Todo(tk.Tk):
         self.title("To-Do App v1")
         self.geometry("300x400")
 
-        self.todo1 = tk.Label(self, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
+        todo1 = tk.Label(self, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
 
-        self.tasks.append(self.todo1)
+        self.tasks.append(todo1)
 
         for task in self.tasks:
             task.pack(side=tk.TOP, fill=tk.X)
@@ -28,7 +28,7 @@ class Todo(tk.Tk):
 
         self.colour_schemes = [{"bg": "lightgrey", "fg": "black"}, {"bg": "grey", "fg": "white"}]
 
-    def add_task(self, evt):
+    def add_task(self, event=None):
         task_text = self.task_create.get(1.0,tk.END).strip()
 
         if len(task_text) > 0:

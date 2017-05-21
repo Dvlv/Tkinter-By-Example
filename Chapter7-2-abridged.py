@@ -50,7 +50,7 @@ class LogWindow(tk.Toplevel):
                 task_time = task_date.split()[1]
                 task_time_pieces = task_time.split(":")
                 task_time_pretty = "{}:{}".format(task_time_pieces[0], task_time_pieces[1])
-                tree.insert('', tk.END, values=(task_name, task_finished_text, task_time_pretty))
+                tree.insert("", tk.END, values=(task_name, task_finished_text, task_time_pretty))
 
             tree.pack(fill=tk.BOTH, expand=1)
 
@@ -118,7 +118,7 @@ class Timer(tk.Tk):
         add_task_sql = "UPDATE pymodoros SET finished = ? WHERE task = ? and date = ?"
         self.runQuery(add_task_sql, ("1", task_name, self.task_started_time))
 
-    def show_log_window(self, evt=None):
+    def show_log_window(self, event=None):
         LogWindow(self)
 
     def safe_destroy(self):
@@ -126,7 +126,7 @@ class Timer(tk.Tk):
 
     @staticmethod
     def runQuery(sql, data=None, receive=False):
-        conn = sqlite3.connect('pymodoro.db')
+        conn = sqlite3.connect("pymodoro.db")
         cursor = conn.cursor()
         if data:
             cursor.execute(sql, data)
@@ -142,14 +142,14 @@ class Timer(tk.Tk):
 
     @staticmethod
     def firstTimeDB():
-        create_tables = 'CREATE TABLE pymodoros (task text, finished integer, date text)'
+        create_tables = "CREATE TABLE pymodoros (task text, finished integer, date text)"
         Timer.runQuery(create_tables)
 
 
 if __name__ == "__main__":
     timer = Timer()
 
-    if not os.path.isfile('pymodoro.db'):
+    if not os.path.isfile("pymodoro.db"):
         timer.firstTimeDB()
 
     timer.mainloop()

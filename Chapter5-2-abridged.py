@@ -12,17 +12,17 @@ class IniEditor(tk.Tk):
         ...
         self.file_name_label.pack(side=tk.TOP, expand=1, fill=tk.X, anchor="n")
         ...
-        self.right_frame.bind('<Configure>', self.frame_height)
+        self.right_frame.bind("<Configure>", self.frame_height)
         ...
 
-    def frame_height(self, evt):
+    def frame_height(self, event=None):
         new_height = self.winfo_height()
         self.right_frame.configure(height=new_height)
 
-    def file_open(self, evt=None):
+    def file_open(self, event=None):
         ...
 
-    def file_save(self, evt=None):
+    def file_save(self, event=None):
         ...
 
         for section in self.active_ini:
@@ -46,7 +46,7 @@ class IniEditor(tk.Tk):
             self.ini_elements["DEFAULT"] = {}
         ...
 
-    def display_section_contents(self, evt):
+    def display_section_contents(self, event):
         if not self.active_ini:
             msg.showerror("No File Open", "Please open an ini file first")
             return

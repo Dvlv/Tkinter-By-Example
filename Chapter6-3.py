@@ -42,26 +42,26 @@ class FindPopup(tk.Toplevel):
 
         self.protocol("WM_DELETE_WINDOW", self.cancel)
 
-    def find(self, evt=None):
+    def find(self, event=None):
         text_to_find = self.find_entry.get()
         if text_to_find and not self.matches_are_highlighted:
             self.master.remove_all_find_tags()
             self.master.highlight_matches(text_to_find)
             self.matches_are_highlighted = True
 
-    def jump_to_next_match(self, evt=None):
+    def jump_to_next_match(self, event=None):
         text_to_find = self.find_entry.get()
         if text_to_find:
             if not self.matches_are_highlighted:
                 self.find()
             self.master.next_match()
 
-    def cancel(self, evt=None):
+    def cancel(self, event=None):
         self.master.remove_all_find_tags()
         self.destroy()
 
-    def matches_are_not_highlighted(self, evt=None):
-        key_pressed = evt.keysym
+    def matches_are_not_highlighted(self, event):
+        key_pressed = event.keysym
         if not key_pressed == "Return":
             self.matches_are_highlighted = False
 
@@ -173,15 +173,15 @@ class Editor(tk.Tk):
         self.bind("<Control-a>", self.select_all)
         self.bind("<Control-f>", self.show_find_window)
 
-        self.main_text.bind('<MouseWheel>', self.scroll_text_and_line_numbers)
-        self.main_text.bind('<Button-4>', self.scroll_text_and_line_numbers)
-        self.main_text.bind('<Button-5>', self.scroll_text_and_line_numbers)
+        self.main_text.bind("<MouseWheel>", self.scroll_text_and_line_numbers)
+        self.main_text.bind("<Button-4>", self.scroll_text_and_line_numbers)
+        self.main_text.bind("<Button-5>", self.scroll_text_and_line_numbers)
 
-        self.line_numbers.bind('<MouseWheel>', self.skip_event)
-        self.line_numbers.bind('<Button-4>', self.skip_event)
-        self.line_numbers.bind('<Button-5>', self.skip_event)
+        self.line_numbers.bind("<MouseWheel>", self.skip_event)
+        self.line_numbers.bind("<Button-4>", self.skip_event)
+        self.line_numbers.bind("<Button-5>", self.skip_event)
 
-    def skip_event(self, evt=None):
+    def skip_event(self, event=None):
         return "break"
 
     def scroll_text_and_line_numbers(self, *args):
@@ -199,19 +199,19 @@ class Editor(tk.Tk):
                 else:
                     move = -1
 
-            self.main_text.yview_scroll(move, 'units')
-            self.line_numbers.yview_scroll(move, 'units')
+            self.main_text.yview_scroll(move, "units")
+            self.line_numbers.yview_scroll(move, "units")
 
         return "break"
 
-    def file_new(self, evt=None):
+    def file_new(self, event=None):
         file_name = filedialog.asksaveasfilename()
         if file_name:
             self.open_file = file_name
             self.main_text.delete(1.0, tk.END)
             self.title(" - ".join([self.WINDOW_TITLE, self.open_file]))
 
-    def file_open(self, evt=None):
+    def file_open(self, event=None):
         file_to_open = filedialog.askopenfilename()
 
         if file_to_open:
@@ -237,7 +237,7 @@ class Editor(tk.Tk):
         self.update_line_numbers()
 
 
-    def file_save(self, evt=None):
+    def file_save(self, event=None):
         if not self.open_file:
             new_file_name = filedialog.asksaveasfilename()
             if new_file_name:
@@ -248,33 +248,33 @@ class Editor(tk.Tk):
             with open(self.open_file, "w") as open_file:
                 open_file.write(new_contents)
 
-    def select_all(self, evt=None):
+    def select_all(self, event=None):
         self.main_text.tag_add("sel", 1.0, tk.END)
 
         return "break"
 
-    def edit_cut(self, evt=None):
+    def edit_cut(self, event=None):
         self.main_text.event_generate("<<Cut>>")
 
         return "break"
 
-    def edit_paste(self, evt=None):
+    def edit_paste(self, event=None):
         self.main_text.event_generate("<<Paste>>")
         self.on_key_release()
 
         return "break"
 
-    def edit_undo(self, evt=None):
+    def edit_undo(self, event=None):
         self.main_text.event_generate("<<Undo>>")
 
         return "break"
 
-    def edit_redo(self, evt=None):
+    def edit_redo(self, event=None):
         self.main_text.event_generate("<<Redo>>")
 
         return "break"
 
-    def insert_spaces(self, evt=None):
+    def insert_spaces(self, event=None):
         self.main_text.insert(tk.INSERT, "    ")
 
         return "break"
@@ -286,7 +286,7 @@ class Editor(tk.Tk):
 
         return (menu_x, menu_y)
 
-    def display_autocomplete_menu(self, evt=None):
+    def display_autocomplete_menu(self, event=None):
         current_index = self.main_text.index(tk.INSERT)
         start = self.adjust_floating_index(current_index)
 
@@ -316,7 +316,7 @@ class Editor(tk.Tk):
                 self.complete_menu.post(x, y)
                 self.main_text.bind("<Down>", self.focus_menu_item)
 
-    def destroy_autocomplete_menu(self, evt=None):
+    def destroy_autocomplete_menu(self, event=None):
         try:
             self.complete_menu.destroy()
             self.main_text.unbind("<Down>")
@@ -341,31 +341,31 @@ class Editor(tk.Tk):
 
         return ".".join([x_index, str(y_previous)])
 
-    def focus_menu_item(self, evt=None):
+    def focus_menu_item(self, event=None):
         try:
             self.complete_menu.focus_force()
             self.complete_menu.entryconfig(0, state="active")
         except tk.TclError:
             pass
 
-    def tag_keywords(self, evt=None, current_index=None):
+    def tag_keywords(self, event=None, current_index=None):
         if not current_index:
             current_index = self.main_text.index(tk.INSERT)
         line_number = current_index.split(".")[0]
         line_beginning = ".".join([line_number, "0"])
-        line_text = self.main_text.get(line_beginning, line_beginning + ' lineend')
+        line_text = self.main_text.get(line_beginning, line_beginning + " lineend")
         line_words = line_text.split()
         number_of_spaces = self.number_of_leading_spaces(line_text)
         y_position = number_of_spaces
 
         for tag in self.main_text.tag_names():
             if tag != "sel":
-                self.main_text.tag_remove(tag, line_beginning, line_beginning + ' lineend')
+                self.main_text.tag_remove(tag, line_beginning, line_beginning + " lineend")
 
         self.add_regex_tags(line_number, line_text)
 
         for word in line_words:
-            stripped_word = word.strip('():,')
+            stripped_word = word.strip("():,")
 
             word_start = str(y_position)
             word_end = str(y_position + len(stripped_word))
@@ -398,7 +398,7 @@ class Editor(tk.Tk):
                 end_index = ".".join([line_number, str(end)])
                 self.main_text.tag_add(tag, start_index, end_index)
 
-    def on_key_release(self, evt=None):
+    def on_key_release(self, event=None):
         self.display_autocomplete_menu()
         self.tag_keywords()
         self.update_line_numbers()
@@ -411,7 +411,7 @@ class Editor(tk.Tk):
         self.line_numbers.insert(1.0, line_number_string)
         self.line_numbers.configure(state="disabled")
 
-    def show_find_window(self, evt=None):
+    def show_find_window(self, event=None):
         FindPopup(self)
 
     def highlight_matches(self, text_to_find):
@@ -431,7 +431,7 @@ class Editor(tk.Tk):
                 self.main_text.tag_add("findmatch", start_index, end_index)
                 self.match_coordinates.append((start_index, end_index))
 
-    def next_match(self, evt=None):
+    def next_match(self, event=None):
         try:
             current_target, current_target_end = self.match_coordinates[self.current_match]
             self.main_text.tag_remove("sel", current_target, current_target_end)

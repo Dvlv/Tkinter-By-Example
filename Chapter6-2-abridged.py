@@ -44,10 +44,10 @@ class Editor(tk.Tk):
         self.main_text.bind("<KeyRelease>", self.on_key_release)
         ...
 
-    def file_new(self, evt=None):
+    def file_new(self, event=None):
         ...
 
-    def file_open(self, evt=None):
+    def file_open(self, event=None):
         ...
 
         final_index = self.main_text.index(tk.END)
@@ -58,19 +58,19 @@ class Editor(tk.Tk):
             self.tag_keywords(None, line_to_tag)
 
 
-    def file_save(self, evt=None):
+    def file_save(self, event=None):
         ...
 
-    def insert_spaces(self, evt=None):
+    def insert_spaces(self, event=None):
         ...
 
     def get_menu_coordinates(self):
         ...
 
-    def display_autocomplete_menu(self, evt=None):
+    def display_autocomplete_menu(self, event=None):
         ...
 
-    def destroy_autocomplete_menu(self, evt=None):
+    def destroy_autocomplete_menu(self, event=None):
         ...
 
     def insert_word(self, word, part, index):
@@ -79,10 +79,10 @@ class Editor(tk.Tk):
     def adjust_floating_index(self, number):
         ...
 
-    def focus_menu_item(self, evt=None):
+    def focus_menu_item(self, event=None):
         ...
 
-    def tag_keywords(self, evt=None, current_index=None):
+    def tag_keywords(self, event=None, current_index=None):
         if not current_index:
             current_index = self.main_text.index(tk.INSERT)
         line_number = current_index.split(".")[0]
@@ -98,7 +98,7 @@ class Editor(tk.Tk):
         self.add_regex_tags(line_number, line_text)
 
         for word in line_words:
-            stripped_word = word.strip('():,')
+            stripped_word = word.strip("():,")
             word_start = str(y_position)
             word_end = str(y_position + len(stripped_word))
             start_index = ".".join([line_number, word_start])
@@ -130,7 +130,7 @@ class Editor(tk.Tk):
                 end_index = ".".join([line_number, str(end)])
                 self.main_text.tag_add(tag, start_index, end_index)
 
-    def on_key_release(self, evt=None):
+    def on_key_release(self, event=None):
         self.display_autocomplete_menu()
         self.tag_keywords()
 

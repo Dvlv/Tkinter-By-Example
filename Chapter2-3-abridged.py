@@ -20,7 +20,7 @@ class Todo(tk.Tk):
 
         ...
 
-    def add_task(self, evt, task_text=None, from_db=False):
+    def add_task(self, event=None, task_text=None, from_db=False):
         if not task_text:
             task_text = self.task_create.get(1.0,tk.END).strip()
 
@@ -39,16 +39,16 @@ class Todo(tk.Tk):
 
         self.task_create.delete(1.0, tk.END)
 
-    def remove_task(self, evt):
-        task = evt.widget
+    def remove_task(self, event):
+        task = event.widget
         if msg.askyesno("Really Delete?", "Delete " + task.cget("text") + "?"):
-            self.tasks.remove(evt.widget)
+            self.tasks.remove(event.widget)
 
             delete_task_query = "DELETE FROM tasks WHERE task=?"
             delete_task_data = (task.cget("text"),)
-            self._runQuery(delete_task_query, delete_task_data)
+            self.runQuery(delete_task_query, delete_task_data)
 
-            evt.widget.destroy()
+            event.widget.destroy()
 
             self.recolour_tasks()
 
@@ -57,16 +57,16 @@ class Todo(tk.Tk):
     def save_task(self, task):
         insert_task_query = "INSERT INTO tasks VALUES (?)"
         insert_task_data = (task,)
-        self._runQuery(insert_task_query, insert_task_data)
+        self.runQuery(insert_task_query, insert_task_data)
 
     def load_tasks(self):
         load_tasks_query = "SELECT task FROM tasks"
-        my_tasks = self._runQuery(load_tasks_query, receive=True)
+        my_tasks = self.runQuery(load_tasks_query, receive=True)
 
         return my_tasks
 
     @staticmethod
-    def _runQuery(sql, data=None, receive=False):
+    def runQuery(sql, data=None, receive=False):
         conn = sqlite3.connect("tasks.db")
         cursor = conn.cursor()
         if data:
@@ -82,17 +82,17 @@ class Todo(tk.Tk):
         conn.close()
 
     @staticmethod
-    def _firstTimeDB():
+    def firstTimeDB():
         create_tables = "CREATE TABLE tasks (task TEXT)"
-        Todo._runQuery(create_tables)
+        Todo.runQuery(create_tables)
 
         default_task_query = "INSERT INTO tasks VALUES (?)"
         default_task_data = ("--- Add Items Here ---",)
-        Todo._runQuery(default_task_query, default_task_data)
+        Todo.runQuery(default_task_query, default_task_data)
 
 
 if __name__ == "__main__":
     if not os.path.isfile("tasks.db"):
-        Todo._firstTimeDB()
+        Todo.firstTimeDB()
     todo = Todo()
     todo.mainloop()

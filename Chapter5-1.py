@@ -47,7 +47,7 @@ class IniEditor(tk.Tk):
         self.bind("<Control-o>", self.file_open)
         self.bind("<Control-s>", self.file_save)
 
-    def file_open(self, evt=None):
+    def file_open(self, event=None):
         ini_file = filedialog.askopenfilename()
 
         while ini_file and not ini_file.endswith(".ini"):
@@ -57,7 +57,7 @@ class IniEditor(tk.Tk):
         if ini_file:
             self.parse_ini_file(ini_file)
 
-    def file_save(self, evt=None):
+    def file_save(self, event=None):
         if not self.active_ini:
             msg.showerror("No File Open", "Please open an ini file first")
             return
@@ -87,7 +87,7 @@ class IniEditor(tk.Tk):
         file_name = ": ".join([ntpath.basename(ini_file), ini_file])
         self.file_name_var.set(file_name)
 
-    def display_section_contents(self, evt):
+    def display_section_contents(self, event=None):
         if not self.active_ini:
             msg.showerror("No File Open", "Please open an ini file first")
             return

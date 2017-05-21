@@ -100,10 +100,10 @@ class IniEditor(tk.Tk):
         self.active_ini[section_name] = {}
         self.populate_section_select_box()
 
-    def frame_height(self, evt):
+    def frame_height(self, event=None):
         ...
 
-    def file_new(self, evt=None):
+    def file_new(self, event=None):
         ini_file = filedialog.asksaveasfilename(filetypes=[("Configuration file", "*.ini")])
 
         while ini_file and not ini_file.endswith(".ini"):
@@ -113,11 +113,11 @@ class IniEditor(tk.Tk):
         if ini_file:
             self.parse_ini_file(ini_file)
 
-    def file_open(self, evt=None):
+    def file_open(self, event=None):
         ini_file = filedialog.askopenfilename(filetypes=[("Configuration file", "*.ini")])
         ...
 
-    def file_save(self, evt=None):
+    def file_save(self, event=None):
         ...
 
     def add_item_form(self):
@@ -147,7 +147,7 @@ class IniEditor(tk.Tk):
             self.section_select.insert(len(self.active_ini.sections()) + 1, "DEFAULT")
             self.ini_elements["DEFAULT"] = {}
 
-    def display_section_contents(self, evt=None):
+    def display_section_contents(self, event=None):
         ...
 
         save_button = tk.Button(self.right_frame, text="Save Changes", command=self.file_save)

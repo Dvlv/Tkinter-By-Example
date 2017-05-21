@@ -72,14 +72,14 @@ class Editor(tk.Tk):
         self.bind("<Control-o>", self.file_open)
         self.bind("<Control-n>", self.file_new)
 
-    def file_new(self, evt=None):
+    def file_new(self, event=None):
         file_name = filedialog.asksaveasfilename()
         if file_name:
             self.open_file = file_name
             self.main_text.delete(1.0, tk.END)
             self.title(" - ".join([self.WINDOW_TITLE, self.open_file]))
 
-    def file_open(self, evt=None):
+    def file_open(self, event=None):
         file_to_open = filedialog.askopenfilename()
 
         if file_to_open:
@@ -103,7 +103,7 @@ class Editor(tk.Tk):
             self.tag_keywords(None, line_to_tag)
 
 
-    def file_save(self, evt=None):
+    def file_save(self, event=None):
         if not self.open_file:
             new_file_name = filedialog.asksaveasfilename()
             if new_file_name:
@@ -114,7 +114,7 @@ class Editor(tk.Tk):
             with open(self.open_file, "w") as open_file:
                 open_file.write(new_contents)
 
-    def insert_spaces(self, evt=None):
+    def insert_spaces(self, event=None):
         self.main_text.insert(tk.INSERT, "    ")
 
         return "break"
@@ -126,7 +126,7 @@ class Editor(tk.Tk):
 
         return (menu_x, menu_y)
 
-    def display_autocomplete_menu(self, evt=None):
+    def display_autocomplete_menu(self, event=None):
         current_index = self.main_text.index(tk.INSERT)
         start = self.adjust_floating_index(current_index)
 
@@ -156,7 +156,7 @@ class Editor(tk.Tk):
                 self.complete_menu.post(x, y)
                 self.main_text.bind("<Down>", self.focus_menu_item)
 
-    def destroy_autocomplete_menu(self, evt=None):
+    def destroy_autocomplete_menu(self, event=None):
         try:
             self.complete_menu.destroy()
             self.main_text.unbind("<Down>")
@@ -181,30 +181,30 @@ class Editor(tk.Tk):
 
         return ".".join([x_index, str(y_previous)])
 
-    def focus_menu_item(self, evt=None):
+    def focus_menu_item(self, event=None):
         try:
             self.complete_menu.focus_force()
             self.complete_menu.entryconfig(0, state="active")
         except tk.TclError:
             pass
 
-    def tag_keywords(self, evt=None, current_index=None):
+    def tag_keywords(self, event=None, current_index=None):
         if not current_index:
             current_index = self.main_text.index(tk.INSERT)
         line_number = current_index.split(".")[0]
         line_beginning = ".".join([line_number, "0"])
-        line_text = self.main_text.get(line_beginning, line_beginning + ' lineend')
+        line_text = self.main_text.get(line_beginning, line_beginning + " lineend")
         line_words = line_text.split()
         number_of_spaces = self.number_of_leading_spaces(line_text)
         y_position = number_of_spaces
 
         for tag in self.main_text.tag_names():
-            self.main_text.tag_remove(tag, line_beginning, line_beginning + ' lineend')
+            self.main_text.tag_remove(tag, line_beginning, line_beginning + " lineend")
 
         self.add_regex_tags(line_number, line_text)
 
         for word in line_words:
-            stripped_word = word.strip('():,')
+            stripped_word = word.strip("():,")
 
             word_start = str(y_position)
             word_end = str(y_position + len(stripped_word))
@@ -237,7 +237,7 @@ class Editor(tk.Tk):
                 end_index = ".".join([line_number, str(end)])
                 self.main_text.tag_add(tag, start_index, end_index)
 
-    def on_key_release(self, evt=None):
+    def on_key_release(self, event=None):
         self.display_autocomplete_menu()
         self.tag_keywords()
 

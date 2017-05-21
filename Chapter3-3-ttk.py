@@ -35,7 +35,7 @@ class NewLanguageForm(tk.Toplevel):
         self.master = master
 
         self.title("Add new Language")
-        self.geometry('300x150')
+        self.geometry("300x150")
 
         self.name_label = ttk.Label(self, text="Language Name", anchor="center")
         self.name_entry = ttk.Entry(self)

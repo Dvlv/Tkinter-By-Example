@@ -38,14 +38,14 @@ class Editor(tk.Tk):
         self.bind("<Control-o>", self.file_open)
         self.bind("<Control-n>", self.file_new)
 
-    def file_new(self, evt=None):
+    def file_new(self, event=None):
         file_name = filedialog.asksaveasfilename()
         if file_name:
             self.open_file = file_name
             self.main_text.delete(1.0, tk.END)
             self.title(" - ".join([self.WINDOW_TITLE, self.open_file]))
 
-    def file_open(self, evt=None):
+    def file_open(self, event=None):
         file_to_open = filedialog.askopenfilename()
 
         if file_to_open:
@@ -61,7 +61,7 @@ class Editor(tk.Tk):
 
         self.title(" - ".join([self.WINDOW_TITLE, self.open_file]))
 
-    def file_save(self, evt=None):
+    def file_save(self, event=None):
         if not self.open_file:
             new_file_name = filedialog.asksaveasfilename()
             if new_file_name:
@@ -72,7 +72,7 @@ class Editor(tk.Tk):
             with open(self.open_file, "w") as open_file:
                 open_file.write(new_contents)
 
-    def insert_spaces(self, evt=None):
+    def insert_spaces(self, event=None):
         self.main_text.insert(tk.INSERT, "    ")
 
         return "break"
@@ -84,7 +84,7 @@ class Editor(tk.Tk):
 
         return (menu_x, menu_y)
 
-    def display_autocomplete_menu(self, evt=None):
+    def display_autocomplete_menu(self, event=None):
         current_index = self.main_text.index(tk.INSERT)
         start = self.adjust_floating_index(current_index)
 
@@ -114,7 +114,7 @@ class Editor(tk.Tk):
                 self.complete_menu.post(x, y)
                 self.main_text.bind("<Down>", self.focus_menu_item)
 
-    def destroy_autocomplete_menu(self, evt=None):
+    def destroy_autocomplete_menu(self, event=None):
         try:
             self.complete_menu.destroy()
             self.main_text.unbind("<Down>")
@@ -139,7 +139,7 @@ class Editor(tk.Tk):
 
         return ".".join([x_index, str(y_previous)])
 
-    def focus_menu_item(self, evt=None):
+    def focus_menu_item(self, event=None):
         try:
             self.complete_menu.focus_force()
             self.complete_menu.entryconfig(0, state="active")

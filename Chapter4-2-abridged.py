@@ -42,58 +42,58 @@ class Game(tk.Tk):
         self.help_history_var_2 = tk.StringVar(self.right_frame)
         self.help_history_var_3 = tk.StringVar(self.right_frame)
 
-        self.help_history_box_1 = tk.Label(self.right_frame, textvar=self.help_history_var_1, bg="black", fg="white", padx=10, pady=10)
-        self.help_history_box_2 = tk.Label(self.right_frame, textvar=self.help_history_var_2, bg="black", fg="white", padx=10, pady=10)
-        self.help_history_box_3 = tk.Label(self.right_frame, textvar=self.help_history_var_3, bg="black", fg="white", padx=10, pady=10)
+        help_history_box_1 = tk.Label(self.right_frame, textvar=self.help_history_var_1, bg="black", fg="white", padx=10, pady=10)
+        help_history_box_2 = tk.Label(self.right_frame, textvar=self.help_history_var_2, bg="black", fg="white", padx=10, pady=10)
+        help_history_box_3 = tk.Label(self.right_frame, textvar=self.help_history_var_3, bg="black", fg="white", padx=10, pady=10)
 
-        self.help_history_box_1.pack(side=tk.TOP, fill=tk.X, padx=10)
-        self.help_history_box_2.pack(side=tk.TOP, fill=tk.X, padx=10)
-        self.help_history_box_3.pack(side=tk.TOP, fill=tk.X, padx=10)
+        help_history_box_1.pack(side=tk.TOP, fill=tk.X, padx=10)
+        help_history_box_2.pack(side=tk.TOP, fill=tk.X, padx=10)
+        help_history_box_3.pack(side=tk.TOP, fill=tk.X, padx=10)
 
         ...
 
-        self.inventory_row_1 = tk.Frame(self.inventory_space, pady=10)
-        self.inventory_row_2 = tk.Frame(self.inventory_space, pady=10)
-        self.inventory_row_3 = tk.Frame(self.inventory_space, pady=10)
+        inventory_row_1 = tk.Frame(self.inventory_space, pady=10)
+        inventory_row_2 = tk.Frame(self.inventory_space, pady=10)
+        inventory_row_3 = tk.Frame(self.inventory_space, pady=10)
 
-        self.inventory_slot_1 = tk.Button(self.inventory_row_1,
-                                          image=self.question_mark_image,
-                                          width=50, height=50,
-                                          bg="black",
-                                          command=lambda: self.use_item(0))
+        inventory_slot_1 = tk.Button(self.inventory_row_1,
+                                     image=self.question_mark_image,
+                                     width=50, height=50,
+                                     bg="black",
+                                     command=lambda: self.use_item(0))
 
-        self.inventory_slot_2 = tk.Button(self.inventory_row_2,
-                                          image=self.question_mark_image,
-                                          width=50, height=50,
-                                          bg="black",
-                                          command=lambda: self.use_item(1))
+        inventory_slot_2 = tk.Button(self.inventory_row_2,
+                                     image=self.question_mark_image,
+                                     width=50, height=50,
+                                     bg="black",
+                                     command=lambda: self.use_item(1))
 
-        self.inventory_slot_3 = tk.Button(self.inventory_row_3,
+        inventory_slot_3 = tk.Button(self.inventory_row_3,
                                           image=self.question_mark_image,
                                           width=50, height=50,
                                           bg="black",
                                           command=lambda: self.use_item(2))
 
-        self.item_name_1 = tk.StringVar(self.inventory_row_1)
-        self.item_name_2 = tk.StringVar(self.inventory_row_2)
-        self.item_name_3 = tk.StringVar(self.inventory_row_3)
+        item_name_1 = tk.StringVar(self.inventory_row_1)
+        item_name_2 = tk.StringVar(self.inventory_row_2)
+        item_name_3 = tk.StringVar(self.inventory_row_3)
 
         self.item_label_vars = [self.item_name_1, self.item_name_2, self.item_name_3]
 
-        self.item_label_1 = tk.Label(self.inventory_row_1, textvar=self.item_name_1, anchor="w")
-        self.item_label_2 = tk.Label(self.inventory_row_2, textvar=self.item_name_2, anchor="w")
-        self.item_label_3 = tk.Label(self.inventory_row_3, textvar=self.item_name_3, anchor="w")
+        item_label_1 = tk.Label(self.inventory_row_1, textvar=self.item_name_1, anchor="w")
+        item_label_2 = tk.Label(self.inventory_row_2, textvar=self.item_name_2, anchor="w")
+        item_label_3 = tk.Label(self.inventory_row_3, textvar=self.item_name_3, anchor="w")
 
-        self.inventory_row_1.pack(fill=tk.X, expand=1)
-        self.inventory_row_2.pack(fill=tk.X, expand=1)
-        self.inventory_row_3.pack(fill=tk.X, expand=1)
+        inventory_row_1.pack(fill=tk.X, expand=1)
+        inventory_row_2.pack(fill=tk.X, expand=1)
+        inventory_row_3.pack(fill=tk.X, expand=1)
 
-        self.inventory_slot_1.pack(side=tk.LEFT, padx=(100,20))
-        self.item_label_1.pack(side=tk.LEFT, fill=tk.X, expand=1)
-        self.inventory_slot_2.pack(side=tk.LEFT, padx=(100,20))
-        self.item_label_2.pack(side=tk.LEFT, fill=tk.X, expand=1)
-        self.inventory_slot_3.pack(side=tk.LEFT, padx=(100,20))
-        self.item_label_3.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        inventory_slot_1.pack(side=tk.LEFT, padx=(100,20))
+        item_label_1.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        inventory_slot_2.pack(side=tk.LEFT, padx=(100,20))
+        item_label_2.pack(side=tk.LEFT, fill=tk.X, expand=1)
+        inventory_slot_3.pack(side=tk.LEFT, padx=(100,20))
+        item_label_3.pack(side=tk.LEFT, fill=tk.X, expand=1)
 
         ...
 
