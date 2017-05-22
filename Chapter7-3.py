@@ -213,6 +213,7 @@ class Timer(tk.Tk):
 
     def update_time_remaining(self, time_string):
         self.time_remaining_var.set(time_string)
+        self.update_idletasks()
 
     def add_new_task(self):
         task_name = self.task_name_entry.get()

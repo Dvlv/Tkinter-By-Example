@@ -47,8 +47,7 @@ class Game(tk.Tk):
 
         self.title("Point and Click")
         self.geometry("800x640")
-        self.minsize(width=800, height=640)
-        self.maxsize(width=800, height=640)
+        self.resizable(False, False)
 
         self.key_image = tk.PhotoImage(file="assets/key.png")
         self.question_mark_image = tk.PhotoImage(file="assets/questionmark.png")

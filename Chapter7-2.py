@@ -142,7 +142,7 @@ class Timer(tk.Tk):
     def setup_worker(self):
         now = datetime.datetime.now()
         in_25_mins = now + datetime.timedelta(minutes=25)
-        #in_25_mins = now + datetime.timedelta(seconds=2)
+        #in_25_mins = now + datetime.timedelta(seconds=3)
         worker = CountingThread(self, now, in_25_mins)
         self.worker = worker
 
@@ -189,6 +189,7 @@ class Timer(tk.Tk):
 
     def update_time_remaining(self, time_string):
         self.time_remaining_var.set(time_string)
+        self.update_idletasks()
 
     def add_new_task(self):
         task_name = self.task_name_entry.get()
