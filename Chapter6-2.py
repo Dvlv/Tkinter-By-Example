@@ -22,7 +22,7 @@ class Editor(tk.Tk):
         self.SPACES_REGEX = re.compile("^\s*")
         self.STRING_REGEX_SINGLE = re.compile("'[^'\r\n]*'")
         self.STRING_REGEX_DOUBLE = re.compile('"[^"\r\n]*"')
-        self.NUMBER_REGEX = re.compile("(?=\(*)(?<![a-z])\d+\.?\d*(?=\)*\,*)")
+        self.NUMBER_REGEX = re.compile(r"\b(?=\(*)\d+\.?\d*(?=\)*\,*)\b")
         self.KEYWORDS_REGEX = re.compile("(?=\(*)(?<![a-z])(None|True|False)(?=\)*\,*)")
         self.SELF_REGEX = re.compile("(?=\(*)(?<![a-z])(self)(?=\)*\,*)")
         self.FUNCTIONS_REGEX = re.compile("(?=\(*)(?<![a-z])(print|list|dict|set|int|str)(?=\()")

@@ -102,7 +102,7 @@ class Editor(tk.Tk):
         self.SPACES_REGEX = re.compile("^\s*")
         self.STRING_REGEX_SINGLE = re.compile("'[^'\r\n]*'")
         self.STRING_REGEX_DOUBLE = re.compile('"[^"\r\n]*"')
-        self.NUMBER_REGEX = re.compile("(?=\(*)(?<![a-z])\d+\.?\d*(?=\)*\,*)")
+        self.NUMBER_REGEX = re.compile(r"\b(?=\(*)\d+\.?\d*(?=\)*\,*)\b")
         self.KEYWORDS_REGEX = re.compile("(?=\(*)(?<![a-z])(None|True|False)(?=\)*\,*)")
         self.SELF_REGEX = re.compile("(?=\(*)(?<![a-z])(self)(?=\)*\,*)")
         self.FUNCTIONS_REGEX = re.compile("(?=\(*)(?<![a-z])(print|list|dict|set|int|str)(?=\()")
@@ -163,6 +163,7 @@ class Editor(tk.Tk):
         self.main_text.bind("<space>", self.destroy_autocomplete_menu)
         self.main_text.bind("<KeyRelease>", self.on_key_release)
         self.main_text.bind("<Tab>", self.insert_spaces)
+        self.main_text.bind("<Escape>", self.destroy_autocomplete_menu)
 
         self.main_text.bind("<Control-y>", self.edit_redo)
 
@@ -172,6 +173,7 @@ class Editor(tk.Tk):
 
         self.bind("<Control-a>", self.select_all)
         self.bind("<Control-f>", self.show_find_window)
+        self.bind("<Control-v>", self.edit_paste)
 
         self.main_text.bind("<MouseWheel>", self.scroll_text_and_line_numbers)
         self.main_text.bind("<Button-4>", self.scroll_text_and_line_numbers)
@@ -227,14 +229,7 @@ class Editor(tk.Tk):
 
         self.title(" - ".join([self.WINDOW_TITLE, self.open_file]))
 
-        final_index = self.main_text.index(tk.END)
-        final_line_number = int(final_index.split(".")[0])
-
-        for line_number in range(final_line_number):
-            line_to_tag = ".".join([str(line_number), "0"])
-            self.tag_keywords(None, line_to_tag)
-
-        self.update_line_numbers()
+        self.tag_all_lines()
 
 
     def file_save(self, event=None):
@@ -261,6 +256,7 @@ class Editor(tk.Tk):
     def edit_paste(self, event=None):
         self.main_text.event_generate("<<Paste>>")
         self.on_key_release()
+        self.tag_all_lines()
 
         return "break"
 
@@ -280,8 +276,8 @@ class Editor(tk.Tk):
         return "break"
 
     def get_menu_coordinates(self):
-        bbox = self.main_text.dlineinfo(tk.INSERT)
-        menu_x = bbox[2] + self.winfo_x() + self.main_text.winfo_x()
+        bbox = self.main_text.bbox(tk.INSERT) #self.main_text.dlineinfo(tk.INSERT)
+        menu_x = bbox[0] + self.winfo_x() + self.main_text.winfo_x()
         menu_y = bbox[1] + self.winfo_y() + self.main_text.winfo_y() + self.FONT_SIZE + 2
 
         return (menu_x, menu_y)
@@ -314,6 +310,7 @@ class Editor(tk.Tk):
                     self.complete_menu.add_command(label=word, command=insert_word_callback)
 
                 self.complete_menu.post(x, y)
+                self.complete_menu.bind("<Escape>", self.destroy_autocomplete_menu)
                 self.main_text.bind("<Down>", self.focus_menu_item)
 
     def destroy_autocomplete_menu(self, event=None):
@@ -347,6 +344,16 @@ class Editor(tk.Tk):
             self.complete_menu.entryconfig(0, state="active")
         except tk.TclError:
             pass
+
+    def tag_all_lines(self):
+        final_index = self.main_text.index(tk.END)
+        final_line_number = int(final_index.split(".")[0])
+
+        for line_number in range(final_line_number):
+            line_to_tag = ".".join([str(line_number), "0"])
+            self.tag_keywords(None, line_to_tag)
+
+        self.update_line_numbers()
 
     def tag_keywords(self, event=None, current_index=None):
         if not current_index:
@@ -398,8 +405,10 @@ class Editor(tk.Tk):
                 end_index = ".".join([line_number, str(end)])
                 self.main_text.tag_add(tag, start_index, end_index)
 
-    def on_key_release(self, event=None):
-        self.display_autocomplete_menu()
+    def on_key_release(self, event):
+        #print(event.keysym)
+        if not event.keysym in ("Up", "Down", "Left", "Right", "BackSpace", "Delete"):
+            self.display_autocomplete_menu()
         self.tag_keywords()
         self.update_line_numbers()
 
