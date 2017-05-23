@@ -46,6 +46,9 @@ class IniEditor(tk.Tk):
             self.ini_elements["DEFAULT"] = {}
         ...
 
+    def clear_right_frame(self):
+        ...
+
     def display_section_contents(self, event):
         if not self.active_ini:
             msg.showerror("No File Open", "Please open an ini file first")
