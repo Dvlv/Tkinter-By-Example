@@ -155,9 +155,22 @@ class Editor(tk.Tk):
         ...
 
     def file_open(self, event=None):
-        ...
+        file_to_open = filedialog.askopenfilename()
 
-        self.update_line_numbers()
+        if file_to_open:
+            self.open_file = file_to_open
+            self.main_text.delete(1.0, tk.END)
+
+            with open(file_to_open, "r") as file_contents:
+                file_lines = file_contents.readlines()
+                if len(file_lines) > 0:
+                    for index, line in enumerate(file_lines):
+                        index = float(index) + 1.0
+                        self.main_text.insert(index, line)
+
+        self.title(" - ".join([self.WINDOW_TITLE, self.open_file]))
+
+        self.tag_all_lines()
 
 
     def file_save(self, event=None):
@@ -176,6 +189,7 @@ class Editor(tk.Tk):
     def edit_paste(self, event=None):
         self.main_text.event_generate("<<Paste>>")
         self.on_key_release()
+        self.tag_all_lines()
 
         return "break"
 
@@ -221,6 +235,16 @@ class Editor(tk.Tk):
 
     def on_key_release(self, event=None):
         ...
+        self.update_line_numbers()
+
+    def tag_all_lines(self):
+        final_index = self.main_text.index(tk.END)
+        final_line_number = int(final_index.split(".")[0])
+
+        for line_number in range(final_line_number):
+            line_to_tag = ".".join([str(line_number), "0"])
+            self.tag_keywords(None, line_to_tag)
+
         self.update_line_numbers()
 
     def update_line_numbers(self):

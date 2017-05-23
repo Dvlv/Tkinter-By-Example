@@ -42,6 +42,7 @@ class Editor(tk.Tk):
 
         ...
         self.main_text.bind("<KeyRelease>", self.on_key_release)
+        self.main_text.bind("<Escape>", self.destroy_autocomplete_menu)
         ...
 
     def file_new(self, event=None):
@@ -69,6 +70,9 @@ class Editor(tk.Tk):
 
     def display_autocomplete_menu(self, event=None):
         ...
+        self.complete_menu.post(x, y)
+        self.complete_menu.bind("<Escape>", self.destroy_autocomplete_menu)
+        self.main_text.bind("<Down>", self.focus_menu_item)
 
     def destroy_autocomplete_menu(self, event=None):
         ...
@@ -131,7 +135,8 @@ class Editor(tk.Tk):
                 self.main_text.tag_add(tag, start_index, end_index)
 
     def on_key_release(self, event=None):
-        self.display_autocomplete_menu()
+        if not event.keysym in ("Up", "Down", "Left", "Right", "BackSpace", "Delete", "Escape"):
+            self.display_autocomplete_menu()
         self.tag_keywords()
 
 if __name__ == "__main__":

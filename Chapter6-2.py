@@ -67,6 +67,7 @@ class Editor(tk.Tk):
         self.main_text.bind("<space>", self.destroy_autocomplete_menu)
         self.main_text.bind("<KeyRelease>", self.on_key_release)
         self.main_text.bind("<Tab>", self.insert_spaces)
+        self.main_text.bind("<Escape>", self.destroy_autocomplete_menu)
 
         self.bind("<Control-s>", self.file_save)
         self.bind("<Control-o>", self.file_open)
@@ -120,9 +121,9 @@ class Editor(tk.Tk):
         return "break"
 
     def get_menu_coordinates(self):
-        bbox = self.main_text.dlineinfo(tk.INSERT)
-        menu_x = bbox[2] + self.winfo_x()
-        menu_y = bbox[1] + self.winfo_y() + self.FONT_SIZE + 2
+        bbox = self.main_text.bbox(tk.INSERT)
+        menu_x = bbox[0] + self.winfo_x() + self.main_text.winfo_x()
+        menu_y = bbox[1] + self.winfo_y() + self.main_text.winfo_y() + self.FONT_SIZE + 2
 
         return (menu_x, menu_y)
 
@@ -154,12 +155,14 @@ class Editor(tk.Tk):
                     self.complete_menu.add_command(label=word, command=insert_word_callback)
 
                 self.complete_menu.post(x, y)
+                self.complete_menu.bind("<Escape>", self.destroy_autocomplete_menu)
                 self.main_text.bind("<Down>", self.focus_menu_item)
 
     def destroy_autocomplete_menu(self, event=None):
         try:
             self.complete_menu.destroy()
             self.main_text.unbind("<Down>")
+            self.main_text.focus_force()
         except AttributeError:
             pass
 
@@ -238,7 +241,8 @@ class Editor(tk.Tk):
                 self.main_text.tag_add(tag, start_index, end_index)
 
     def on_key_release(self, event=None):
-        self.display_autocomplete_menu()
+        if not event.keysym in ("Up", "Down", "Left", "Right", "BackSpace", "Delete", "Escape"):
+            self.display_autocomplete_menu()
         self.tag_keywords()
 
 if __name__ == "__main__":

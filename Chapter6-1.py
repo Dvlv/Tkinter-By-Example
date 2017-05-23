@@ -78,9 +78,9 @@ class Editor(tk.Tk):
         return "break"
 
     def get_menu_coordinates(self):
-        bbox = self.main_text.dlineinfo(tk.INSERT)
-        menu_x = bbox[2] + self.winfo_x()
-        menu_y = bbox[1] + self.winfo_y() + self.FONT_SIZE + 2
+        bbox = self.main_text.bbox(tk.INSERT)
+        menu_x = bbox[0] + self.winfo_x() + self.main_text.winfo_x()
+        menu_y = bbox[1] + self.winfo_y() + self.main_text.winfo_y() + self.FONT_SIZE + 2
 
         return (menu_x, menu_y)
 
@@ -118,6 +118,7 @@ class Editor(tk.Tk):
         try:
             self.complete_menu.destroy()
             self.main_text.unbind("<Down>")
+            self.main_text.focus_force()
         except AttributeError:
             pass
 

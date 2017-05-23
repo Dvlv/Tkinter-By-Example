@@ -276,7 +276,7 @@ class Editor(tk.Tk):
         return "break"
 
     def get_menu_coordinates(self):
-        bbox = self.main_text.bbox(tk.INSERT) #self.main_text.dlineinfo(tk.INSERT)
+        bbox = self.main_text.bbox(tk.INSERT)
         menu_x = bbox[0] + self.winfo_x() + self.main_text.winfo_x()
         menu_y = bbox[1] + self.winfo_y() + self.main_text.winfo_y() + self.FONT_SIZE + 2
 
@@ -317,6 +317,7 @@ class Editor(tk.Tk):
         try:
             self.complete_menu.destroy()
             self.main_text.unbind("<Down>")
+            self.main_text.focus_force()
         except AttributeError:
             pass
 
@@ -406,8 +407,7 @@ class Editor(tk.Tk):
                 self.main_text.tag_add(tag, start_index, end_index)
 
     def on_key_release(self, event):
-        #print(event.keysym)
-        if not event.keysym in ("Up", "Down", "Left", "Right", "BackSpace", "Delete"):
+        if not event.keysym in ("Up", "Down", "Left", "Right", "BackSpace", "Delete", "Escape"):
             self.display_autocomplete_menu()
         self.tag_keywords()
         self.update_line_numbers()
