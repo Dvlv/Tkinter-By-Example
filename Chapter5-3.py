@@ -204,6 +204,12 @@ class IniEditor(tk.Tk):
         file_name = ": ".join([ntpath.basename(ini_file), ini_file])
         self.file_name_var.set(file_name)
 
+        self.clear_right_frame()
+
+    def clear_right_frame(self):
+        for child in self.right_frame.winfo_children():
+            child.destroy()
+
     def populate_section_select_box(self):
         self.section_select.delete(0, tk.END)
 

@@ -98,6 +98,12 @@ class IniEditor(tk.Tk):
         file_name = ": ".join([ntpath.basename(ini_file), ini_file])
         self.file_name_var.set(file_name)
 
+        self.clear_right_frame()
+
+    def clear_right_frame(self):
+        for child in self.right_frame.winfo_children():
+            child.destroy()
+
     def display_section_contents(self, event=None):
         if not self.active_ini:
             msg.showerror("No File Open", "Please open an ini file first")
