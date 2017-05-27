@@ -21,7 +21,7 @@ You are free to download this book as many times as you want and you are encoura
 
 If you wish to compile the Latex source into another format you may do so. If you then wish to redistribute this new format please submit it as a pull request here. 
 
-### The Code
+### The Python Code
 
 This source code is licensed under the MIT Licence
 
