@@ -9,10 +9,11 @@ self.STRING_REGEX_DOUBLE = re.compile('"[^"\r\n]*"')
 # a literal "
 
 self.NUMBER_REGEX = re.compile(
-(?=\(*)     # match but don't highlight 0 or more opening brackets
-(?<![a-z])  # don't match if it begins with an alphabet character
-\d+\.?\d*   # 1 or more digits, 0 or 1 decimal points, any number of trailing digits
-(?=\)*\,*)  # match but don't highlight 0 or more closing brackets or commas
+    \b          # begin with a word boundry (punctuation or space)
+    (?=\(*)     # match but don't highlight 0 or more opening brackets
+    \d+\.?\d*   # match 1 or more numbers, 0 or 1 decimal points, 0 or more numbers
+    (?=\)*\,*)  # match but don't highlight 0 or more closing brackets or commas
+    \b          # end with a word boundry (punctuation or space)
 )
 
 
