@@ -1,13 +1,13 @@
 \documentclass[a4paper,11pt,openany]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{helvet}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{graphicx}
+\usepackage{DejaVuSansMono}
 \usepackage[margin=2cm]{geometry}
 
-\graphicspath{ {Images/} }
+\graphicspath{ {../Images/} }
 
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -27,13 +27,15 @@
   showspaces=false,
   showtabs=false,
   tabsize=4,
-  basicstyle=\footnotesize
+  basicstyle=\ttfamily\footnotesize
 }
-
+\sffamily 
 \title{Python Tkinter By Example}
 \author{David Love}
 
 \newcommand{\myGithub}{http://github.com/Dvlv/tkinter-book}
+
+\renewcommand{\familydefault}{\sfdefault}
 
 \begin{document}
 
@@ -94,7 +96,7 @@ It's true that plain tkinter is not going to win any beauty awards. It's old. Th
 As is tradition with all programming books, we'll start with the classic Hello World example to introduce a few things. This will pop up a small window with "Hello World" written inside.
 
 \lstset{style=pystyle}
-\lstinputlisting[language=Python, caption=Hello World, captionpos=b]{Code/Chapter1-1.py}
+\lstinputlisting[language=Python, caption=Hello World, captionpos=b]{../Code/Chapter1-1.py}
 
 We start with \lstinline[columns=fixed]{root=tk.Tk()} which creates the overall tk window.
 Then we define a \lstinline[columns=fixed]{tk.Label()} which will hold our "Hello World" text. The first argument to a Tk widget is the parent in which it will be placed. In this case, we will just put it directly within the \lstinline[columns=fixed]{root} instance.
@@ -115,7 +117,7 @@ Save and run this code and you should see a small window appear with "Hello Worl
 \section{Using Classes}
 Whilst Tkinter code can be written using only functions, it's much better to use a class to keep track of all individual widgets which may need to reference each other. Without doing this, you need to rely on \lstinline[columns=fixed]{global} or \lstinline[columns=fixed]{nonlocal} variables, which gets ugly as your app grows. It also allows for much finer controls once your app gets more complex, allowing you to override default behaviours of Tkinter's own objects.
 
-\lstinputlisting[language=Python, caption=Hello World as a Class, captionpos=b]{Code/Chapter1-2.py}
+\lstinputlisting[language=Python, caption=Hello World as a Class, captionpos=b]{../Code/Chapter1-2.py}
 
 The main code here is the same as above. The rest is simply creating a \lstinline[columns=fixed]{Root} class inheriting from Tkinter's \lstinline[columns=fixed]{Tk} and running its \lstinline[columns=fixed]{mainloop} function as before. I've also included the standard \break 
 \lstinline[columns=fixed]{if "__name__" == __main__} line for familiarity.
@@ -157,7 +159,7 @@ Your first app should look something like this:
 
 Let's get right into the code for the first iteration.
 
-\lstinputlisting[language=Python, caption=Our Initial To-Do Framework, captionpos=b]{Code/Chapter2-1.py}
+\lstinputlisting[language=Python, caption=Our Initial To-Do Framework, captionpos=b]{../Code/Chapter2-1.py}
 
 \subsection{\_\_init\_\_}
 
@@ -201,7 +203,7 @@ That's it for the first iteration of our to-do list! We now have a styled list o
 
 A lot has changed from the previous iteration, so I will include the full code in this section. Your new To-do app can be written as follows:
 
-\lstinputlisting[language=Python, caption=Our Scrolling To-Do, captionpos=b]{Code/Chapter2-2.py}
+\lstinputlisting[language=Python, caption=Our Scrolling To-Do, captionpos=b]{../Code/Chapter2-2.py}
 
 \newpage
 
@@ -243,7 +245,7 @@ Our final iteration will handle saving and retrieving values from a \lstinline[c
 
 There are only a few small changes to our existing methods in this iteration, so I will not re-print the whole class. If you wish to follow along, start with your code from the previous version, make the changes listed in this section, and add any other new methods to the end of our \lstinline[columns=fixed]{Todo} class. As a reminder, the full code will be available on Github at \myGithub{} as \lstinline[columns=fixed]{Chapter2-3.py}.
 
-\lstinputlisting[language=Python, caption=Database Integration, captionpos=b]{Code/Chapter2-3-abridged.py}
+\lstinputlisting[language=Python, caption=Database Integration, captionpos=b]{../Code/Chapter2-3-abridged.py}
 
 \newpage
 
@@ -311,7 +313,7 @@ We'll start with a simple app which translates to one language (italian). Your f
 \caption{A two-tabbed translator (Italian)}
 \end{figure}
 
-\lstinputlisting[language=Python, caption=Our first translation app, captionpos=b]{Code/Chapter3-1.py}
+\lstinputlisting[language=Python, caption=Our first translation app, captionpos=b]{../Code/Chapter3-1.py}
 
 \subsection{requests}
 
@@ -359,7 +361,7 @@ Our next iteration boasts a menu bar at the top, and the ability to translate to
 
 \newpage 
 
-\lstinputlisting[language=Python, caption=Our Translator with a Menu, captionpos=b]{Code/Chapter3-2-abridged.py}
+\lstinputlisting[language=Python, caption=Our Translator with a Menu, captionpos=b]{../Code/Chapter3-2-abridged.py}
 
 \subsection{\_\_init\_\_}
 
@@ -398,7 +400,7 @@ Our code is now split into 3 classes which I will cover separately. The executab
 
 \subsection{The LanguageTab}
 
-\lstinputlisting[language=Python, caption=An Independent Language Tab, captionpos=b]{Code/Chapter3-3-LanguageTab.py}
+\lstinputlisting[language=Python, caption=An Independent Language Tab, captionpos=b]{../Code/Chapter3-3-LanguageTab.py}
 
 Our \lstinline[columns=fixed]{LanguageTab} class is built on top of a \lstinline[columns=fixed]{Frame}, since that's what we \lstinline[columns=fixed]{add} into our \lstinline[columns=fixed]{Notebook}. It holds a reference to the full name of the language (for the tab name) and its short code for the google translate API. It is responsible for its own \lstinline[columns=fixed]{StringVar}, \lstinline[columns=fixed]{Label} and \lstinline[columns=fixed]{Button}, as well as the command bound to the \lstinline[columns=fixed]{Button}
 
@@ -414,7 +416,7 @@ Now we'll jump back to the main \lstinline[columns=fixed]{TranslateBook} class w
 
 \subsection{The TranslateBook}
 
-\lstinputlisting[language=Python, caption=Our Main Class, captionpos=b]{Code/Chapter3-3-TranslateBook.py} 
+\lstinputlisting[language=Python, caption=Our Main Class, captionpos=b]{../Code/Chapter3-3-TranslateBook.py} 
 
 \subsubsection{\_\_init\_\_}
 
@@ -442,7 +444,7 @@ All we need to do here is create the \lstinline[columns=fixed]{NewLanguageForm} 
 \caption{Our Add New Language Form}
 \end{figure}
 
-\lstinputlisting[language=Python, caption=Our Translator with a Menu, captionpos=b]{Code/Chapter3-3-NewLanguageForm.py}
+\lstinputlisting[language=Python, caption=Our Translator with a Menu, captionpos=b]{../Code/Chapter3-3-NewLanguageForm.py}
  
 As you should be able to interpret from the code, we have a small window with 2 \lstinline[columns=fixed]{Label}s, 2 \lstinline[columns=fixed]{Entries} and a \lstinline[columns=fixed]{Button}. An \lstinline[columns=fixed]{Entry} is just a \lstinline[columns=fixed]{Text} widget which is only one line. If you're familiar with HTML, think of an \lstinline[columns=fixed]{Entry} as an \lstinline[columns=fixed]{input[type="text"]} and a \lstinline[columns=fixed]{Text} as a \lstinline[columns=fixed]{textarea}. Our \lstinline[columns=fixed]{__init__} just sets our window title and size, creates the widgets, and packs them all. The \lstinline[columns=fixed]{master} argument to here is our \lstinline[columns=fixed]{TranslateBook} instance, as the \lstinline[columns=fixed]{submit} method needs to access its \lstinline[columns=fixed]{languages_menu}
 
@@ -488,7 +490,7 @@ In this chapter we'll be creating one of those point-and-click puzzle games. Her
 
 The concept I chose for our game is like a super simple version of the "escape the room" puzzle games. You see a door and need to escape. If you are following along, give the game a try before you begin. It's Chapter4-1.py from Github. When writing out this code, feel free to use my (amazing) artwork if you don't fancy drawing anything yourself. 
 
-\lstinputlisting[language=Python, caption=Our Game, captionpos=b]{Code/Chapter4-1.py} 
+\lstinputlisting[language=Python, caption=Our Game, captionpos=b]{../Code/Chapter4-1.py} 
 
 \subsection{GameScreen}
 
@@ -543,7 +545,7 @@ Next up we'll be refining the inventory system logic as well as showing the hist
 
 With this iteration our item system is more sophisticated. We can now click and use things from our inventory and specify scenes which require the use of an item to continue. Let's look at how this is done.
 
-\lstinputlisting[language=Python, caption=Our Game With Working Inventory, captionpos=b]{Code/Chapter4-2-abridged.py}
+\lstinputlisting[language=Python, caption=Our Game With Working Inventory, captionpos=b]{../Code/Chapter4-2-abridged.py}
 
 \subsection{GameScreen}
 
@@ -629,7 +631,7 @@ In this chapter we'll be creating an app which allows us to edit \lstinline[colu
 
 \newpage
 
-\lstinputlisting[language=Python, caption=Our Ini Editor, captionpos=b]{Code/Chapter5-1.py} 
+\lstinputlisting[language=Python, caption=Our Ini Editor, captionpos=b]{../Code/Chapter5-1.py} 
 
 \subsection{\_\_init\_\_}
 
@@ -691,7 +693,7 @@ The user currently has to save each section before loading the next one, otherwi
 
 With this iteration we hold the updated values in memory even when switching between sections. This means the user can update as many sections as they want and will only need to save once at the end. We've also updated the size of the \lstinline[columns=fixed]{Frame}s on re-size. Let's take a look at how this is done:
 
-\lstinputlisting[language=Python, caption=Our Ini Editor, captionpos=b]{Code/Chapter5-2-abridged.py} 
+\lstinputlisting[language=Python, caption=Our Ini Editor, captionpos=b]{../Code/Chapter5-2-abridged.py} 
 
 \subsection{\_\_init\_\_ and frame\_height}
 
@@ -729,7 +731,7 @@ With our current app we can edit existing content but cannot create anything new
 \section{Our finished Ini Editor}
 Now complete with creating capabilities, let's look at our finalised app:
 
-\lstinputlisting[language=Python, caption=Our Ini Editor, captionpos=b]{Code/Chapter5-3-abridged.py} 
+\lstinputlisting[language=Python, caption=Our Ini Editor, captionpos=b]{../Code/Chapter5-3-abridged.py} 
 
 \subsection{CentralForm}
 To save a bunch of \lstinline[columns=fixed]{__init__} method duplication we've got a base-class for a form which will appear in the center of its parent window. The \lstinline[columns=fixed]{__init__} method begins by grabbing the x and y co-ordinates of its master (our IniEditor instance) as well as its width and height. It then has variables representing its own width and height which it uses to calculate where to place itself in order to be in the center of the master and stores these in \lstinline[columns=fixed]{pos_x and pos_y}. It finally calls the \lstinline[columns=fixed]{.geometry()} method on a formatted string of (width x height + x + y) to define its size and position in one go. Now we have this we can create other windows which inherit from this class, and as long as they call \lstinline[columns=fixed]{super().__init__(master)} they will be placed in the center of their master. Let's look at our 2 child classes now.
@@ -794,7 +796,7 @@ In this chapter we'll be making a simple Python editor complete with syntax high
 
 \newpage
 
-\lstinputlisting[language=Python, caption=Text Editor, captionpos=b]{Code/Chapter6-1.py}
+\lstinputlisting[language=Python, caption=Text Editor, captionpos=b]{../Code/Chapter6-1.py}
 
 \subsection{\_\_init\_\_}
 
@@ -871,7 +873,7 @@ Now it's time to utilise some \lstinline[columns=fixed]{tags} to get syntax high
 \section{Syntax Highlighting}
 With this iteration we have some syntax highlighting for strings, numbers, decorators, and various language keywords. A lot of the code has stayed the same, just a small addition to \lstinline[columns=fixed]{file_open} to highlight files upon opening them. 
 
-\lstinputlisting[language=Python, caption=Text Editor, captionpos=b]{Code/Chapter6-2-abridged.py}
+\lstinputlisting[language=Python, caption=Text Editor, captionpos=b]{../Code/Chapter6-2-abridged.py}
 
 \subsection{\_\_init\_\_}
 
@@ -887,7 +889,7 @@ We've adjusted the method bound to \lstinline[columns=fixed]{<KeyRelease>} to a 
 
 \subsection{Regexes Explained}
 
-\lstinputlisting[language=Python, caption=Regex Explanations, captionpos=b]{Code/Chapter6-regex-explain.py}
+\lstinputlisting[language=Python, caption=Regex Explanations, captionpos=b]{../Code/Chapter6-regex-explain.py}
 
 \subsection{file\_open}
 
@@ -946,7 +948,7 @@ We'll finish off our text editor by adding some standard features to bring it in
 
 \section{Our Finished Editor}
 
-\lstinputlisting[language=Python, caption=Our Finished Editor, captionpos=b]{Code/Chapter6-3-abridged.py}
+\lstinputlisting[language=Python, caption=Our Finished Editor, captionpos=b]{../Code/Chapter6-3-abridged.py}
 
 \subsection{FindPopup}
 
@@ -1068,7 +1070,7 @@ In this chapter we will be creating an app which will help people to follow the 
 \caption{A Pomodoro Timer}
 \end{figure}
 
-\lstinputlisting[language=Python, caption=A 25 Minute Timer, captionpos=b]{Code/Chapter7-1.py}
+\lstinputlisting[language=Python, caption=A 25 Minute Timer, captionpos=b]{../Code/Chapter7-1.py}
 
 \subsection{Timer}
 
@@ -1151,7 +1153,7 @@ Now that we have a basic timer application working we can build up some useful f
 
 \section{Keeping a Log}
 
-\lstinputlisting[language=Python, caption=A Timer With a Log, captionpos=b]{Code/Chapter7-2-abridged.py}
+\lstinputlisting[language=Python, caption=A Timer With a Log, captionpos=b]{../Code/Chapter7-2-abridged.py}
 
 \subsection{Timer}
 
@@ -1207,7 +1209,7 @@ We'll finish up our timer by styling the \lstinline[columns=fixed]{Treeview} usi
 
 \section{Our Finished Timer}
 
-\lstinputlisting[language=Python, caption=Our ttk Timer, captionpos=b]{Code/Chapter7-3-abridged.py}
+\lstinputlisting[language=Python, caption=Our ttk Timer, captionpos=b]{../Code/Chapter7-3-abridged.py}
 
 \subsection{Timer}
 
