@@ -146,8 +146,8 @@ class Editor(tk.Tk):
                 else:
                     move = -1
 
-            self.main_text.yview_scroll(move, "units")
-            self.line_numbers.yview_scroll(move, "units")
+            self.main_text.yview_scroll(int(move), "units")
+            self.line_numbers.yview_scroll(int(move), "units")
 
         return "break"
 
