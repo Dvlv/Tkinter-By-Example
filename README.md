@@ -3,6 +3,8 @@ Learn Tkinter By Example - a free book for learning tkinter, complete with full 
 
 [Get the book here](Tkinter-By-Example.pdf)
 
+Mobile formats ([mobi](assets/Tkinter-By-Example.mobi) and [epub](assets/Tkinter-By-Example.epub)) are now available in the [assets](assets) folder. However, I would recommend using [FBReader](https://fbreader.org) with the PDF version where possible. 
+
 ## What's This Book About?
 
 This book walks you through 7 full-featured applications built with Python and Tkinter. Each application will teach you different aspects of Tkinter which you can use for your own projects. Screenshots, source code and full explanations are included with each app.
