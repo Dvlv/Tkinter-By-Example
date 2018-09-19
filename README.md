@@ -23,6 +23,8 @@ https://creativecommons.org/licenses/by-nd/4.0/
 
 You are free to download this book as many times as you want and you are encouraged to share it with anyone and everyone who may benefit from it. 
 
+You are free to translate this book into another language if you wish.
+
 If you wish to compile the Latex source into another format you may do so. If you then wish to redistribute this new format please submit it as a pull request here. 
 
 ### The Python Code
