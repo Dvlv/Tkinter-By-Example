@@ -1,12 +1,33 @@
+#! /usr/bin/env python
+"""*********************************************************************
+In this chapter we'll be making a simple Python editor complete with
+syntax highlighting and some basic auto-completion. Here we'll learn 
+about:
+-- More advanced features of the Text widget.
+-- More advanced event binding.
+-- Using Menu s outside of a top bar.
+-- Using tags.
+-- Overriding some of the window manager's event calls.
+*********************************************************************"""
+try:
+    import tkinter as tk
+    from tkinter import filedialog
+    import tkinter.messagebox as msg
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    import tkFileDialog as filedialog
+    import tkMessageBox as msg
 import re
-import tkinter as tk
-import tkinter.messagebox as msg
-from tkinter import filedialog
 from functools import partial
 
 class FindPopup(tk.Toplevel):
     def __init__(self, master):
-        super().__init__()
+        try:
+            super(FindPopup, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Toplevel.__init__(self)
 
         self.master = master
 
@@ -85,7 +106,11 @@ class FindPopup(tk.Toplevel):
 
 class Editor(tk.Tk):
     def __init__(self):
-        super().__init__()
+        try:
+            super(Editor, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
 
         self.FONT_SIZE = 12
         self.WINDOW_TITLE = "Text Editor"

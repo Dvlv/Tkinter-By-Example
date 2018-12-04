@@ -1,8 +1,28 @@
-import tkinter as tk
+#! /usr/bin/env python
+"""*********************************************************************
+In this chapter we'll be creating a basic to-do list. Here we'll learn
+about the following:
+    -- Allowing the user to enter text
+    -- Binding functions to keypresses
+    -- Dynamically generating widgets
+    -- Scrolling an area
+    -- Storing data (with sqlite)
+*********************************************************************"""
+try:
+    import tkinter as tk
+except ImportError:
+    # Python 2
+    import Tkinter as tk
 
 class Todo(tk.Tk):
-    def __init__(self, tasks=None):
-        super().__init__()
+    """We start off by defining our Todo class and initialising
+    it with an empty list of tasks."""
+    def __init__(self, tasks=""):
+        try:
+            super(Todo, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
 
         if not tasks:
             self.tasks = []
@@ -29,9 +49,14 @@ class Todo(tk.Tk):
         self.colour_schemes = [{"bg": "lightgrey", "fg": "black"}, {"bg": "grey", "fg": "white"}]
 
     def add_task(self, event=None):
-        task_text = self.task_create.get(1.0,tk.END).strip()
+        """
+        When adding a new item, the first thing to do is get the text which the user entered
+        into our Text widget.
+        The arguments here tell the widget how much of the text to grab.
+        """
+        task_text = self.task_create.get(1.0, tk.END).strip()
 
-        if len(task_text) > 0:
+        if task_text:
             new_task = tk.Label(self, text=task_text, pady=10)
 
             _, task_style_choice = divmod(len(self.tasks), 2)
@@ -48,5 +73,5 @@ class Todo(tk.Tk):
         self.task_create.delete(1.0, tk.END)
 
 if __name__ == "__main__":
-    todo = Todo()
-    todo.mainloop()
+    TODO = Todo()
+    TODO.mainloop()

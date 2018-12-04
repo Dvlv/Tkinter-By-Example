@@ -1,12 +1,37 @@
-import tkinter as tk
-from tkinter import messagebox as msg
-from tkinter.ttk import Notebook
-from tkinter import ttk
+#! /usr/bin/env python
+"""*********************************************************************
+In this chapter we'll be creating a tool which will translate english 
+text into multiple other languages using the Google Translate API. 
+Here we'll learn about the following:
+-- Creating a tabbed interface
+-- Creating a Menu
+-- Creating a pop-up window
+-- Accessing the Clipboard
+-- Calling APIs with requests  
+*********************************************************************"""
+try:
+    import tkinter as tk
+    from tkinter import *
+    import tkinter.messagebox as msg
+    from tkinter.ttk import Notebook
+    from tkinter import ttk
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    from Tkinter import *
+    import tkMessageBox as msg
+    import ttk
+    from ttk import Notebook
+
 import requests
 
 class LanguageTab(ttk.Frame):
     def __init__(self, master, lang_name, lang_code):
-        super().__init__(master)
+        try:
+            super(LanguageTab, self).__init__(master)
+        except TypeError:
+            # Python 2
+            ttk.Frame.__init__(self)
 
         self.lang_name = lang_name
         self.lang_code = lang_code
@@ -27,10 +52,13 @@ class LanguageTab(ttk.Frame):
         root.clipboard_append(self.translation_var.get())
         msg.showinfo("Copied Successfully", "Text copied to clipboard")
 
-
 class NewLanguageForm(tk.Toplevel):
-    def __init__(self, master):
-        super().__init__()
+    def __init__(self, master=None):
+        try:
+            super(NewLanguageForm, self).__init__(master)
+        except TypeError:
+            # Python 2
+            tk.Toplevel.__init__(self)
 
         self.master = master
 
@@ -64,7 +92,11 @@ class NewLanguageForm(tk.Toplevel):
 
 class TranslateBook(tk.Tk):
     def __init__(self):
-        super().__init__()
+        try:
+            super(TranslateBook, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
 
         self.title("Translation Book v3")
         self.geometry("500x300")

@@ -1,13 +1,35 @@
-import tkinter as tk
-from tkinter import filedialog
-import tkinter.messagebox as msg
+#! /usr/bin/env python
+"""*********************************************************************
+In this chapter we'll be creating an app which allows us to edit .ini
+config files. There's a folder in thecode repository called ini_files
+with a test file for you to play with while writing out this code. With this
+project we will learn about the following:
+-- The Listbox widget.
+-- The Spinbox widget.
+-- Creating a file open and file save dialogue.
+-- Using keyboard shortcuts with Menu items.
+*********************************************************************"""
+try:
+    import tkinter as tk
+    from tkinter import filedialog
+    import tkinter.messagebox as msg
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    import tkFileDialog as filedialog
+    import tkMessageBox as msg
+
 import configparser as cp
 import ntpath
 
 class IniEditor(tk.Tk):
 
     def __init__(self):
-        super().__init__()
+        try:
+            super(IniEditor, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
 
         self.title("Config File Editor")
         self.geometry("600x600")

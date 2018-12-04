@@ -1,12 +1,34 @@
+#! /usr/bin/env python
+"""*********************************************************************
+In this chapter we will be creating an app which will help people to
+follow the pomodoro technique. The pomodoro technique involves
+concentrating on a task for 25 minute bursts, so we will be building
+a timer which will count down for 25 minutes then alert the user when
+the time is up. It will also contain a log of completed tasks. 
+In this chapter we will learn about the following:
+-- Using threads with tkinter
+-- the ttk Treeview widget
+-- Using ttk widgets for a more native look 
+*********************************************************************"""
+try:
+    import tkinter as tk
+    import tkinter.messagebox as msg
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    import tkMessageBox as msg
+
 import threading
 import time
 import datetime
-import tkinter as tk
-from tkinter import messagebox as msg
 
 class CountingThread(threading.Thread):
     def __init__(self, master, start_time, end_time):
-        super().__init__()
+        try:
+            super(CountingThread, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Toplevel.__init__(self)
         self.master = master
         self.start_time = start_time
         self.end_time = end_time
@@ -45,7 +67,11 @@ class CountingThread(threading.Thread):
 
 class Timer(tk.Tk):
     def __init__(self):
-        super().__init__()
+        try:
+            super(Timer, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
 
         self.title("Pomodoro Timer")
         self.geometry("500x300")

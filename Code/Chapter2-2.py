@@ -1,9 +1,31 @@
-import tkinter as tk
-import tkinter.messagebox as msg
+#! /usr/bin/env python
+"""*********************************************************************
+With this re-write, I have introduced some new components - a Canvas and 
+two Frames . A Canvas is apowerful general-use widget with many 
+capabilities (usually graphical). We are using it here for its ability
+to scroll, which we need if we want to add a lot of apps to our list. 
+A Frame is a layout component which
+can be used to group together multiple other widgets.
+*********************************************************************"""
+
+try:
+    import tkinter as tk
+    from tkinter import *
+    import tkinter.messagebox as msg
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    import tkMessageBox as msg
+    import ttk
+
 
 class Todo(tk.Tk):
-    def __init__(self, tasks=None):
-        super().__init__()
+    def __init__(self, parent=None, tasks=None, side=tk.LEFT, anchor=tk.W):
+        try:
+            super(Todo, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
 
         if not tasks:
             self.tasks = []
@@ -15,26 +37,34 @@ class Todo(tk.Tk):
         self.tasks_frame = tk.Frame(self.tasks_canvas)
         self.text_frame = tk.Frame(self)
 
-        self.scrollbar = tk.Scrollbar(self.tasks_canvas, orient="vertical", command=self.tasks_canvas.yview)
+        self.scrollbar = tk.Scrollbar(self.tasks_canvas,\
+            orient="vertical",\
+            command=self.tasks_canvas.yview)
 
         self.tasks_canvas.configure(yscrollcommand=self.scrollbar.set)
 
         self.title("To-Do App v2")
         self.geometry("300x400")
 
-        self.task_create = tk.Text(self.text_frame, height=3, bg="white", fg="black")
+        self.task_create = tk.Text(self.text_frame,\
+                                   height=3, bg="white",\
+                                   fg="black")
 
         self.tasks_canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=1)
         self.scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-        self.canvas_frame = self.tasks_canvas.create_window((0, 0), window=self.tasks_frame, anchor="n")
+        self.canvas_frame = self.tasks_canvas.create_window((0, 0),\
+                                    window=self.tasks_frame,\
+                                    anchor="n")
 
         self.task_create.pack(side=tk.BOTTOM, fill=tk.X)
         self.text_frame.pack(side=tk.BOTTOM, fill=tk.X)
         self.task_create.focus_set()
 
-        todo1 = tk.Label(self.tasks_frame, text="--- Add Items Here ---", bg="lightgrey", fg="black", pady=10)
-        todo1.bind("<Button-1>", self.remove_task)
+        todo1 = tk.Label(self.tasks_frame, text="--- Add Items Here ---",\
+                         bg="lightgrey",\
+                         fg="black",\
+                         pady=10)
 
         self.tasks.append(todo1)
 
@@ -51,7 +81,7 @@ class Todo(tk.Tk):
         self.colour_schemes = [{"bg": "lightgrey", "fg": "black"}, {"bg": "grey", "fg": "white"}]
 
     def add_task(self, event=None):
-        task_text = self.task_create.get(1.0,tk.END).strip()
+        task_text = self.task_create.get(1.0, tk.END).strip()
 
         if len(task_text) > 0:
             new_task = tk.Label(self.tasks_frame, text=task_text, pady=10)
@@ -89,7 +119,7 @@ class Todo(tk.Tk):
 
     def task_width(self, event):
         canvas_width = event.width
-        self.tasks_canvas.itemconfig(self.canvas_frame, width = canvas_width)
+        self.tasks_canvas.itemconfig(self.canvas_frame, width=canvas_width)
 
     def mouse_scroll(self, event):
         if event.delta:
