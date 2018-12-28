@@ -1,12 +1,34 @@
-import tkinter as tk
-from tkinter import filedialog
-import tkinter.messagebox as msg
+#! /usr/bin/env python
+"""*********************************************************************
+In this chapter we'll be creating an app which allows us to edit .ini
+config files. There's a folder in thecode repository called ini_files
+with a test file for you to play with while writing out this code. With this
+project we will learn about the following:
+-- The Listbox widget.
+-- The Spinbox widget.
+-- Creating a file open and file save dialogue.
+-- Using keyboard shortcuts with Menu items.
+*********************************************************************"""
+try:
+    import tkinter as tk
+    from tkinter import filedialog
+    import tkinter.messagebox as msg
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    import tkFileDialog as filedialog
+    import tkMessageBox as msg
+
 import configparser as cp
 import ntpath
 
 class CentralForm(tk.Toplevel):
-    def __init__(self, master, my_height=80):
-        super().__init__()
+    def __init__(self,master, my_height=500):
+        try:
+            super(CentralForm, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Toplevel.__init__(self)
         self.master = master
 
         master_pos_x = self.master.winfo_x()
@@ -23,11 +45,13 @@ class CentralForm(tk.Toplevel):
         geometry = "{}x{}+{}+{}".format(my_width, my_height, pos_x, pos_y)
         self.geometry(geometry)
 
-
 class AddSectionForm(CentralForm):
     def __init__(self, master):
-        super().__init__(master)
-
+        try:
+            super(AddSectionForm, self).__init__(master)
+        except TypeError:
+            # Python 2
+            CentralForm.__init__(self,master)
         self.title("Add New Section")
 
         self.main_frame = tk.Frame(self, bg="lightgrey")
@@ -55,8 +79,12 @@ class AddItemForm(CentralForm):
 
         my_height = 120
 
-        super().__init__(master, my_height)
-
+        try:
+            super(AddItemForm, self).__init__(master, my_height)
+        except TypeError:
+            # Python 2
+            CentralForm.__init__(self, master, my_height)
+        self.master = master
         self.title("Add New Item")
 
         self.main_frame = tk.Frame(self, bg="lightgrey")
@@ -87,8 +115,11 @@ class AddItemForm(CentralForm):
 class IniEditor(tk.Tk):
 
     def __init__(self):
-        super().__init__()
-
+        try:
+            super(IniEditor, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
         self.title("Config File Editor")
         self.geometry("600x600")
 
@@ -138,7 +169,6 @@ class IniEditor(tk.Tk):
         if not self.active_ini:
             msg.showerror("No File Open", "Please open an ini file first")
             return
-
         AddSectionForm(self)
 
     def add_section(self, section_name):

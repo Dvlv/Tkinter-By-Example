@@ -1,15 +1,30 @@
+#! /usr/bin/env python
+"""*********************************************************************
+This Chapter is to introduce how to 
+*********************************************************************"""
+try:
+    import tkinter as tk
+    import tkinter.messagebox as msg
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    import tkFileDialog as filedialo
+    import tkMessageBox as msg
+
 import threading
 import time
 import datetime
 import sqlite3
 import os
 import functools
-import tkinter as tk
-from tkinter import messagebox as msg
 
 class CountingThread(threading.Thread):
     def __init__(self, master, start_time, end_time):
-        super().__init__()
+        try:
+            super(CountingThread, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Toplevel.__init__(self)
         self.master = master
         self.start_time = start_time
         self.end_time = end_time
@@ -51,7 +66,11 @@ class CountingThread(threading.Thread):
 
 class Timer(tk.Tk):
     def __init__(self):
-        super().__init__()
+        try:
+            super(Timer, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
 
         self.title("Pomodoro Timer")
         self.geometry("500x300")

@@ -1,13 +1,36 @@
-import tkinter as tk
-from tkinter import messagebox as msg
-from tkinter.ttk import Notebook
+#! /usr/bin/env python
+"""*********************************************************************
+In this chapter we'll be creating a tool which will translate english 
+text into multiple other languages using the Google Translate API. 
+Here we'll learn about the following:
+-- Creating a tabbed interface
+-- Creating a Menu
+-- Creating a pop-up window
+-- Accessing the Clipboard
+-- Calling APIs with requests 
+*********************************************************************"""
+try:
+    import tkinter as tk
+    from tkinter import *
+    import tkinter.messagebox as msg
+    from tkinter.ttk import Notebook
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    from Tkinter import *
+    import tkMessageBox as msg
+    from ttk import Notebook
 
 import requests
 
 class TranslateBook(tk.Tk):
     def __init__(self):
-        super().__init__()
-
+        try:
+            super(TranslateBook, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
+            
         self.title("Translation Book v1")
         self.geometry("500x300")
 

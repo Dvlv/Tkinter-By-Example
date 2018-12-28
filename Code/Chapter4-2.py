@@ -1,12 +1,28 @@
-import tkinter as tk
-from tkinter import font
+#! /usr/bin/env python
+"""*********************************************************************
+In this chapter we'll be creating one of those point-and-click puzzle 
+games. Here we'll learn about the following:
+-- Handling images
+-- Drawing on and updating a Can
+*********************************************************************"""
+try:
+    import tkinter as tk
+    from tkinter import font
+    PhotoImage = tk.PhotoImage
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    import tkFont as font
+    from PIL import Image, ImageTk 
+    PhotoImage = ImageTk.PhotoImage
+
 from functools import partial
 
 class GameScreen():
     def __init__(self, master, image, roi, inventory_item=None, help_text=None, required_item=None):
         self.master = master
         self.roi = roi
-        self.image = tk.PhotoImage(file=image)
+        self.image = PhotoImage(file=image)
         self.inventory_item = inventory_item
         self.help_text = help_text
         self.required_item = required_item
@@ -35,7 +51,11 @@ class GameScreen():
 
 class Game(tk.Tk):
     def __init__(self):
-        super().__init__()
+        try:
+            super(Game, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
 
         self.inventory_slots = []
         self.inventory_slots_in_use = []
@@ -49,8 +69,8 @@ class Game(tk.Tk):
         self.geometry("800x640")
         self.resizable(False, False)
 
-        self.key_image = tk.PhotoImage(file="assets/key.png")
-        self.question_mark_image = tk.PhotoImage(file="assets/questionmark.png")
+        self.key_image = PhotoImage(file="../assets/key.png")
+        self.question_mark_image = PhotoImage(file="../assets/questionmark.png")
 
         self.screen = tk.Canvas(self, bg="white", width=500, height=800)
         self.right_frame = tk.Frame(self, width=300, height=800)
@@ -209,9 +229,9 @@ class Game(tk.Tk):
 if __name__ == "__main__":
     game = Game()
 
-    scene1 = GameScreen(game, "assets/scene1.png", (378,135,427,217), "key", "You Need To Leave but the Door is Locked!")
-    scene2 = GameScreen(game, "assets/scene2.png", (117,54,329,412), None, "You Got the Key!", "key")
-    scene3 = GameScreen(game, "assets/scene3.png", (117,54,329,412), None, "The Door is Open!")
+    scene1 = GameScreen(game, "../assets/scene1.png", (378,135,427,217), "key", "You Need To Leave but the Door is Locked!")
+    scene2 = GameScreen(game, "../assets/scene2.png", (117,54,329,412), None, "You Got the Key!", "key")
+    scene3 = GameScreen(game, "../assets/scene3.png", (117,54,329,412), None, "The Door is Open!")
 
     all_screens = [scene1, scene2, scene3]
 

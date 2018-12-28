@@ -1,12 +1,29 @@
-import tkinter as tk
-import tkinter.messagebox as msg
+#! /usr/bin/env python
+"""*********************************************************************
+There are only a few small changes to our existing methods in this 
+iteration, here I will be explaining the database handling
+*********************************************************************"""
+try:
+    import tkinter as tk
+    from tkinter import *
+    import tkinter.messagebox as msg
+
+except ImportError:
+    # Python 2
+    import Tkinter as tk
+    import tkMessageBox as msg
+    import ttk
+    
 import os
 import sqlite3
 
 class Todo(tk.Tk):
     def __init__(self, tasks=None):
-        super().__init__()
-
+        try:
+            super(Todo, self).__init__()
+        except TypeError:
+            # Python 2
+            tk.Tk.__init__(self)
         if not tasks:
             self.tasks = []
         else:
