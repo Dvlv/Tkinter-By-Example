@@ -102,7 +102,7 @@ class Todo(tk.Tk):
 
     def mouse_scroll(self, event):
         if event.delta:
-            self.tasks_canvas.yview_scroll(-1*(event.delta/120), "units")
+            self.tasks_canvas.yview_scroll(int(-1*(event.delta/120)), "units")
         else:
             if event.num == 5:
                 move = 1
